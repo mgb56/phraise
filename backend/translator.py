@@ -1,6 +1,4 @@
-import six
 from google.cloud import translate_v2 as translate
-
 
 from parser import PartialParser
 
@@ -12,7 +10,10 @@ class PartialTranslator:
         self.parsed_text = self.parser.partial_parse()
         self.translate_client = translate.Client()
     
-    def translate(self, target_lang, src_lang):
+    def translate(self, target_lang, src_lang, is_mock=False):
+        if is_mock:
+            return self.translate_mock()
+
         # manually embed the noun phrase in a <p> tag
         s_html = self.parsed_text[0] + '<p>' + self.parsed_text[1] + '</p>' + self.parsed_text[2]
         result = self.translate_client.translate(s_html, 
@@ -26,6 +27,9 @@ class PartialTranslator:
         translated_part = result["translatedText"][first_html_tag_pos + 3: last_html_tag_pos]
 
         return self.parsed_text[0] + ' ' + translated_part + ' ' + self.parsed_text[2]
+    
+    def translate_mock(self):
+        return 'esto es un translacion mocko'
 
 # s = 'the big red dog ran up the tree'
 # translator = PartialTranslator(s)

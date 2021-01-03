@@ -1,6 +1,7 @@
 from flask import Flask
-app = Flask(__name__)
 
+
+app = Flask(__name__)
 
 @app.route('/', , methods=['POST', 'GET'])
 def hello_world():
@@ -9,7 +10,5 @@ def hello_world():
         sentences = json_form['sentences']
         for sentence in sentences:
             print(sentence)
-
-
 
     return ''

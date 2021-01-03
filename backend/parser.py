@@ -1,7 +1,7 @@
 import spacy
 
-nlp = spacy.load('en_core_web_sm')
 
+nlp = spacy.load('en_core_web_sm')
 
 # given a sentence, extract a noun phrase and translte it
 class PartialParser:
