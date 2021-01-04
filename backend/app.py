@@ -12,10 +12,11 @@ def hello_world():
     #         print(sentence)
 
     # print("lol")
-    # return 'test to see if this is working'
-    return flask.Reponse(status=200)
+    return 'test to see if this is working'
+    #return flask.Reponse(status=200)
 
 if __name__ == '__main__':
     import os  
     port = int(os.environ.get('PORT', 33507)) 
-    app.run(host='0.0.0.0', port=port, ssl_context='adhoc')
+    #context = ('server.crt', 'server.key')
+    app.run(host='0.0.0.0', port=port) #, ssl_context='adhoc')
