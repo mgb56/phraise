@@ -11,7 +11,9 @@ def hello_world():
     #     for sentence in sentences:
     #         print(sentence)
 
-    return 'test to see if this is working'
+    # print("lol")
+    # return 'test to see if this is working'
+    return flask.Reponse(status=200)
 
 if __name__ == '__main__':
     import os  
