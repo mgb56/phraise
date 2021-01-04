@@ -11,6 +11,8 @@ def hello_world():
     #     for sentence in sentences:
     #         print(sentence)
 
+    print(request)
+    print(request.data)
     # print("lol")
     return 'test to see if this is working'
     #return flask.Reponse(status=200)

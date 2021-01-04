@@ -32,6 +32,17 @@ chrome.tabs.onActivated.addListener((tab) => {
     var regex = new RegExp(expression);
 
     if (url && url.match(regex)) {
+      // let translatedText = ["hi", "bye"];
+
+      // fetch("http://0.0.0.0:33507/", {
+      //   method: "POST",
+      //   body: JSON.stringify(translatedText),
+      //   headers: { "Content-type": "application/json; charset=UTF-8" },
+      // })
+      //   .then((response) => console.log(response))
+      //   .then((json) => console.log(json))
+      //   .catch((err) => console.log(err));
+
       //chrome.tabs.insertCSS(null, { file: './mystyles.css' });
       chrome.tabs.executeScript(null, { file: "./foreground.js" }, () =>
         console.log("i injected")
@@ -40,14 +51,14 @@ chrome.tabs.onActivated.addListener((tab) => {
   });
 });
 
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.message === "yo check the storage") {
-    chrome.tabs.sendMessage(active_tab_id, {
-      message: "yo i got your message",
-    });
-
-    chrome.storage.local.get("password", (value) => {
-      console.log(value);
-    });
-  }
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+  fetch("http://0.0.0.0:33507/", {
+    method: "POST",
+    body: JSON.stringify(request.array),
+    headers: { "Content-type": "application/json; charset=UTF-8" },
+  })
+    .then((response) => console.log(response))
+    .then(sendResponse({ translatedText: "lol" }))
+    .catch((err) => console.log(err));
+  return true; // to prevent message port from being closed
 });

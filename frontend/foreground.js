@@ -53,9 +53,14 @@
 //   }
 // }
 
+var translatedNodes = [];
+var translatedText = [];
+
 function handleText(node) {
   if (Math.random() < 0.02 && node.textContent.trim().split(" ").length > 3) {
     console.log(node.textContent);
+    translatedText.push(node.textContent);
+    translatedNodes.push(node);
   }
 }
 
@@ -75,3 +80,33 @@ function walk(node) {
 
 console.log("got here");
 walk(document.getRootNode());
+console.log(translatedNodes);
+
+console.log("about to send message?");
+chrome.runtime.sendMessage({ array: translatedText }, function (response) {
+  console.log(response.translatedText);
+});
+
+// chrome.runtime.sendMessage(translatedText, function (response) {
+//   console.log("responded");
+// });
+
+// var obj = {};
+// // obj.nodes = translatedNodes;
+// obj.nodes = ["hi", "bye"];
+// const json = JSON.stringify(obj);
+// console.log(json);
+
+// console.log(JSON.stringify(translatedText));
+
+// fetch("http://0.0.0.0:33507/", {
+//   method: "POST",
+//   // mode: "no-cors",
+//   body: JSON.stringify(translatedText),
+//   headers: { "Content-type": "application/json; charset=UTF-8" },
+// })
+//   .then((response) => console.log(response))
+//   .then((json) => console.log(json))
+//   .catch((err) => console.log(err));
+
+// response.json();
