@@ -6,7 +6,7 @@ import json
 
 app = Flask(__name__)
 
-@app.route('/', methods=['POST', 'GET'])
+@app.route('/', methods=['POST'])
 def hello_world():
     if request.method != 'POST':
         return 'not currently supported'

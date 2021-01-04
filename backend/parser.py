@@ -87,7 +87,12 @@ class PartialParser:
                     first_valid_index = i
 
                 last_valid_index = i
-        
+
+            elif chunk_len <= self.user_pref_range[0] and i + 1 < len(self.chunks) and self.chunks[i+1][1] >= self.user_pref_range[1]:
+                if first_valid_index is None:
+                    first_valid_index = i
+
+                last_valid_index = i
         # select an index at random between first_valid_index and last_valid_index at random
         rand_index = randint(first_valid_index, last_valid_index)
         
