@@ -40,7 +40,7 @@ class PartialTranslator:
         return self.parsed_text[0] + ' ' + translated_part + ' ' + self.parsed_text[2]
     
     def translate_mock(self):
-        return 'esto es un translacion mocko'
+        return 'this is un buen translaction que is not quite finished'
 
 # s = 'the big red dog ran up the tree'
 # translator = PartialTranslator(s)
