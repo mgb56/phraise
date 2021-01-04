@@ -48,7 +48,9 @@ class PartialParser:
                 if not found_np:
                     if len(res) == 0:
                         res.append('')
-                    res.append(noun_phrase)
+                    tok_texts = [tok.text for tok in noun_phrase]
+                    res.append(' '.join(tok_texts))
+                    #res.append(noun_phrase.text)
                     found_np = True
             elif tuple(token.tensor) not in visited:
                 if found_np:
