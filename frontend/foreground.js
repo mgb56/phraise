@@ -54,7 +54,9 @@
 // }
 
 function handleText(node) {
-  console.log(node.textContent);
+  if (Math.random() < 0.02 && node.textContent.trim().split(" ").length > 3) {
+    console.log(node.textContent);
+  }
 }
 
 function walk(node) {
