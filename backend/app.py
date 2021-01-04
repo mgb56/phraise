@@ -3,7 +3,7 @@ from flask import Flask
 
 app = Flask(__name__)
 
-@app.route('/', , methods=['POST', 'GET'])
+@app.route('/', methods=['POST', 'GET'])
 def hello_world():
     # if request.method == 'POST' and 'sentences' in request.form:
     #     json_form = json.loads(request.form)
