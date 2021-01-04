@@ -15,3 +15,8 @@ result = translate_client.translate(text)
 print(u"Text: {}".format(result["input"]))
 print(u"Translation: {}".format(result["translatedText"]))
 print(u"Detected source language: {}".format(result["detectedSourceLanguage"]))
+
+# choose random percentage of sentences
+# send to backend
+# get translated sentences from backend
+# parse and replace -- somehow replace the phrases and re-render
