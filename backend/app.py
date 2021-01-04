@@ -1,6 +1,8 @@
 from flask import Flask, request, Response
 from translator import PartialTranslator
 
+import json
+
 
 app = Flask(__name__)
 
@@ -32,10 +34,12 @@ def hello_world():
         else:
             res.append('')
 
-    return Response(
-        response=res,
+    response = Response(
+        response=json.dumps(res),
         status=200
     )
+
+    return response
 
     # if request.method == 'POST' and 'sentences' in request.form:
     #     json_form = json.loads(request.form)
