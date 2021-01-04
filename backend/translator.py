@@ -4,13 +4,24 @@ from parser import PartialParser
 
 
 class PartialTranslator:
-    def __init__(self, s):
+    def __init__(self, s, is_mock=False):
         self.s = s
+        self.is_mock = is_mock
+        if self.is_mock:
+            return
+
         self.parser = PartialParser(s)
         self.parsed_text = self.parser.partial_parse()
         self.translate_client = translate.Client()
+        
     
-    def translate(self, target_lang, src_lang, is_mock=False):
+    def translate(self, target_lang, src_lang):
+        if self.is_mock:
+            return self.translate_mock()
+        else:
+            return self.translate_real(target_lang, src_lang)
+    
+    def translate_real(self, target_lang, src_lang, is_mock=False):
         if is_mock:
             return self.translate_mock()
 
