@@ -93,6 +93,11 @@ class PartialParser:
                     first_valid_index = i
 
                 last_valid_index = i
+        
+        if first_valid_index is None:
+            first_valid_index = 0
+        if last_valid_index is None:
+            last_valid_index = len(self.chunks) - 1
         # select an index at random between first_valid_index and last_valid_index at random
         rand_index = randint(first_valid_index, last_valid_index)
         
