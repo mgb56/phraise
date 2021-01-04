@@ -37,7 +37,7 @@ class PartialTranslator:
 
         translated_part = result["translatedText"][first_html_tag_pos + 3: last_html_tag_pos]
 
-        return self.parsed_text[0] + ' ' + translated_part + ' ' + self.parsed_text[2]
+        return self.parsed_text[0] + translated_part + self.parsed_text[2]
     
     def translate_mock(self):
         return 'this is un buen translaction que is not quite finished'

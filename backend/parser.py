@@ -27,18 +27,6 @@ class PartialParser:
         for token in noun_phrase:
             visited.add(tuple(token.tensor))
 
-        # for token in noun_chunk:
-        #     visited.add(tuple(token.tensor))
-
-        # noun_phrase = []
-        # for token in self.doc:
-        #     if token.pos_ == 'NOUN': # currently only will do noun phrases; easy to extend
-        #         for tok in token.subtree:
-        #             visited.add(tuple(tok.tensor))
-        #             noun_phrase.append(tok.text)
-        #         break
-        
-
         first = True
         found_np = False
         res = []
@@ -48,21 +36,21 @@ class PartialParser:
                 if not found_np:
                     if len(res) == 0:
                         res.append('')
-                    tok_texts = [tok.text for tok in noun_phrase]
-                    res.append(' '.join(tok_texts))
-                    #res.append(noun_phrase.text)
+
+                    res.append(noun_phrase.text_with_ws)
+
                     found_np = True
             elif tuple(token.tensor) not in visited:
                 if found_np:
                     if len(res) == 2:
-                        res.append(token.text)
+                        res.append(token.text_with_ws)
                     else:
-                        res[2] += ' ' + token.text
+                        res[2] += token.text_with_ws
                 else:
                     if len(res) == 0:
-                        res.append(token.text + ' ')
+                        res.append(token.text_with_ws)
                     else:
-                        res[0] += ' ' + token.text
+                        res[0] += token.text_with_ws
         if len(res) == 1:
             res.append('')
             res.append('')
@@ -100,9 +88,11 @@ class PartialParser:
 
 
 
-s = 'the dog ran up the blue fence'
+s = '               the dog ran up the blue fence'
+
 # #s = 'the the'
-translator = PartialParser(s, user_pref_range=(1, 3))
+#translator = PartialParser(s, user_pref_range=(1, 3))
 #translator.debug()
-res = translator.partial_parse()
-print(res)
+#res = translator.partial_parse()
+#print(s)
+#print(''.join(res))
