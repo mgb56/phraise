@@ -1,5 +1,3 @@
-// const { htmlToText } = require("html-to-text");
-
 chrome.runtime.onInstalled.addListener(function () {
   chrome.storage.sync.set({ color: "#3aa757" }, function () {
     console.log("The color is green.");
@@ -32,17 +30,6 @@ chrome.tabs.onActivated.addListener((tab) => {
     var regex = new RegExp(expression);
 
     if (url && url.match(regex)) {
-      // let translatedText = ["hi", "bye"];
-
-      // fetch("http://0.0.0.0:33507/", {
-      //   method: "POST",
-      //   body: JSON.stringify(translatedText),
-      //   headers: { "Content-type": "application/json; charset=UTF-8" },
-      // })
-      //   .then((response) => console.log(response))
-      //   .then((json) => console.log(json))
-      //   .catch((err) => console.log(err));
-
       //chrome.tabs.insertCSS(null, { file: './mystyles.css' });
       chrome.tabs.executeScript(null, { file: "./foreground.js" }, () =>
         console.log("i injected")
@@ -57,8 +44,12 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     body: JSON.stringify(request.array),
     headers: { "Content-type": "application/json; charset=UTF-8" },
   })
-    .then((response) => console.log(response))
-    .then(sendResponse({ translatedText: "lol" }))
+    // .then((response) => console.log(response))
+    .then((response) => response.json())
+    .then((jsonResponse) => {
+      console.log(jsonResponse);
+      sendResponse({ translatedText: jsonResponse });
+    })
     .catch((err) => console.log(err));
   return true; // to prevent message port from being closed
 });
