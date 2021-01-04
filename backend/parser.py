@@ -72,7 +72,7 @@ class PartialParser:
         return res
     
     def select_noun_chunk_no_pref(self):
-        rand_index = randint(0, len(self.noun_chunks))
+        rand_index = randint(0, len(self.noun_chunks) - 1)
         return self.noun_chunks[rand_index][0]
 
     def select_noun_chunk_with_pref(self):
