@@ -26,7 +26,9 @@ class PartialTranslator:
             return self.translate_mock()
 
         # manually embed the noun phrase in a <p> tag
-        s_html = self.parsed_text[0] + '<p>' + self.parsed_text[1] + '</p>' + self.parsed_text[2]
+        num_left_spaces, num_right_spaces = self.count_leading_and_trailing_whitespace(self.parsed_text[1])
+        s_text = self.parsed_text[1].strip()
+        s_html = self.parsed_text[0] + '<p>' + s_text + '</p>' + self.parsed_text[2]
         result = self.translate_client.translate(s_html, 
                                             target_language=target_lang, 
                                             source_language=src_lang,
@@ -37,12 +39,46 @@ class PartialTranslator:
 
         translated_part = result["translatedText"][first_html_tag_pos + 3: last_html_tag_pos]
 
+        translated_part = ' ' * num_left_spaces + translated_part + ' ' * num_right_spaces
+
+        # print('--------------')
+        # print(self.parsed_text[1])
+        # print(translated_part)
+        # print(num_left_spaces, num_right_spaces)
+        # print('--------------')
+
         return self.parsed_text[0] + translated_part + self.parsed_text[2]
     
     def translate_mock(self):
         return 'this is un buen translaction que is not quite finished'
+    
+    def count_leading_and_trailing_whitespace(self, sentence):
+        saw_char = False
+        num_left_spaces = 0
+        num_right_spaces = 0
+
+        i = 0
+        while i < len(sentence):
+            if sentence[i].isalnum():
+                break
+            else:
+                num_left_spaces += 1
+            i += 1
+        
+        i = len(sentence) - 1
+        while i >= 0:
+            if sentence[i].isalnum():
+                break
+            else:
+                num_right_spaces += 1
+            i -= 1 
+
+        return (num_left_spaces, num_right_spaces)
+            
 
 # s = 'the big red dog ran up the tree'
 # translator = PartialTranslator(s)
+# res = translator.count_leading_and_trailing_whitespace(' test  ')
+# print(res)
 # translation = translator.translate(target_lang='es', src_lang='en')
 # print(translation)

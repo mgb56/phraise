@@ -15,7 +15,7 @@ def hello_world():
     res = []
     for sentence in json_req:
         if len(sentence) > 0:
-            translator = PartialTranslator(sentence, is_mock=True)
+            translator = PartialTranslator(sentence, is_mock=False)
             translated = translator.translate(src_lang='en', target_lang='es')
             res.append(translated)
         else:
