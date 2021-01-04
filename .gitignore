@@ -6,3 +6,7 @@ node_modules/
 npm-debug.log
 debug.log
 .DS_Store
+__pycache__/
+server.crt
+server.csr
+server.key

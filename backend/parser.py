@@ -88,7 +88,7 @@ class PartialParser:
 
 
 
-s = '               the dog ran up the blue fence'
+#s = '               the dog ran up the blue fence'
 
 # #s = 'the the'
 #translator = PartialParser(s, user_pref_range=(1, 3))

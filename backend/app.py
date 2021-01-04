@@ -8,23 +8,10 @@ app = Flask(__name__)
 
 @app.route('/', methods=['POST', 'GET'])
 def hello_world():
-
-    json_req = request.get_json()
-    #print(json_req)
-
     if request.method != 'POST':
         return 'not currently supported'
-
-    res = []
-
-
-    #print(request.data)
-    # print(type(request.data))
-
-    # for obj in list(request.data):
-    #     print(type(obj))
-
-
+    
+    json_req = request.get_json()
     res = []
     for sentence in json_req:
         if len(sentence) > 0:
@@ -41,17 +28,6 @@ def hello_world():
 
     return response
 
-    # if request.method == 'POST' and 'sentences' in request.form:
-    #     json_form = json.loads(request.form)
-    #     sentences = json_form['sentences']
-    #     for sentence in sentences:
-    #         print(sentence)
-
-    #print(request)
-    #print(request.data)
-    # print("lol")
-    return 'test to see if this is working'
-    #return flask.Reponse(status=200)
 
 if __name__ == '__main__':
     import os  
