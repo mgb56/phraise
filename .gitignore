@@ -6,7 +6,8 @@ node_modules/
 npm-debug.log
 debug.log
 .DS_Store
-backend/__pycache__/
+*.pyc
+*.pyo
 server.crt
 server.csr
 server.key
