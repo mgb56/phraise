@@ -9,6 +9,7 @@ function handleText(node) {
   }
 }
 
+// don't include links, try to skip stuff not on the page
 function walk(node) {
   if (node.nodeType === 3) {
     handleText(node);
