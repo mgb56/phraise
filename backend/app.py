@@ -16,7 +16,7 @@ def hello_world():
         return 'not currently supported'
     
     json_req = request.get_json()
-    translator = PartialTranslator(json_req, is_mock=False, try_free=False)
+    translator = PartialTranslator(json_req, is_mock=False)
     res = translator.translate(src_lang='en', target_lang='es')
 
 
