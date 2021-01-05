@@ -1,10 +1,14 @@
 from flask import Flask, request, Response
 from translator import PartialTranslator
+from lib import real_words_percentage
 
 import json
-
+import nltk
 
 app = Flask(__name__)
+
+nltk.download('words')
+dictionary = set(nltk.corpus.words.words())
 
 @app.route('/', methods=['POST'])
 def hello_world():
@@ -14,8 +18,9 @@ def hello_world():
     json_req = request.get_json()
     res = []
     for sentence in json_req:
-        if len(sentence) > 0:
-            translator = PartialTranslator(sentence, is_mock=True)
+        # if len(sentence) > 0 and real_words_percentage(sentence, dictionary) > 0.5:
+        if len(sentence) > 0: 
+            translator = PartialTranslator(sentence, is_mock=False)
             translated = translator.translate(src_lang='en', target_lang='es')
             res.append(translated)
         else:
