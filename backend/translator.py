@@ -49,7 +49,7 @@ class PartialTranslator:
                                                       mime_type='text/html',
                                                       parent='projects/disco-beach-300422'
                                                       )
-            text_result = [translation.translated_text for translation in result]
+            text_result = [translation.translated_text for translation in result.translations]
 
         translations = []
         for i, translation in enumerate(text_result):
