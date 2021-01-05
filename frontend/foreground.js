@@ -2,7 +2,7 @@ var translatedNodes = [];
 var translatedText = [];
 
 function handleText(node) {
-  if (Math.random() < 0.005 && node.textContent.trim().split(" ").length > 3) {
+  if (Math.random() < 0.01 && node.textContent.trim().split(" ").length > 3) {
     console.log(node.textContent);
     translatedText.push(node.textContent);
     translatedNodes.push(node);

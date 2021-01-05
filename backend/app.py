@@ -16,7 +16,8 @@ def hello_world():
         return 'not currently supported'
     
     json_req = request.get_json()
-    translator = PartialTranslator(json_req, is_mock=False)
+    json_req = [sentence for sentence in json_req if real_words_percentage(sentence, dictionary) > 0.5]
+    translator = PartialTranslator(json_req, is_mock=False, try_free=True)
     res = translator.translate(src_lang='en', target_lang='es')
 
 

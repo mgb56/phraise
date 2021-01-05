@@ -17,3 +17,4 @@ googleapis-common-protos==1.52.0
 Jinja2==2.11.2
 requests==2.25.1
 spacy==2.3.5
+nltk==3.5
