@@ -20,17 +20,6 @@ def hello_world():
     translator = PartialTranslator(json_req, is_mock=False, try_free=True)
     res = translator.translate(src_lang='en', target_lang='es')
 
-
-    # res = []
-    # for sentence in json_req:
-    #     # if len(sentence) > 0 and real_words_percentage(sentence, dictionary) > 0.5:
-    #     if len(sentence) > 0: 
-    #         translator = PartialTranslator(sentence, is_mock=False)
-    #         translated = translator.translate(src_lang='en', target_lang='es')
-    #         res.append(translated)
-    #     else:
-    #         res.append('')
-
     response = Response(
         response=json.dumps(res),
         status=200

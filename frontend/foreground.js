@@ -2,10 +2,13 @@ var translatedNodes = [];
 var translatedText = [];
 
 function handleText(node) {
-  if (Math.random() < 0.01 && node.textContent.trim().split(" ").length > 3) {
-    console.log(node.textContent);
-    translatedText.push(node.textContent);
-    translatedNodes.push(node);
+  if (Math.random() < 0.005 && node.textContent.trim().split(" ").length > 3) {
+    var numChars = node.textContent.match(/[a-zA-Z]/g).length;
+    if (numChars >= 15) {
+      console.log(node.textContent);
+      translatedText.push(node.textContent);
+      translatedNodes.push(node);
+    }
   }
 }
 
