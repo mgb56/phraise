@@ -11,3 +11,4 @@ debug.log
 server.crt
 server.csr
 server.key
+**/__pycache__
