@@ -1,18 +1,18 @@
-from google.cloud import translate_v2 as translate
+from google.cloud import translate
 
 from parser import PartialParser
 
 
 class PartialTranslator:
-    def __init__(self, s, is_mock=False):
-        self.s = s
+    def __init__(self, sentences, is_mock=False):
+        self.sentences = sentences
         self.is_mock = is_mock
         if self.is_mock:
             return
 
-        self.parser = PartialParser(s)
-        self.parsed_text = self.parser.partial_parse()
-        self.translate_client = translate.Client()
+        self.parser = PartialParser(sentences)
+        self.parsed_texts = self.parser.partial_parse()
+        self.translate_client = translate.TranslationServiceClient()
         
     
     def translate(self, target_lang, src_lang):
@@ -25,29 +25,28 @@ class PartialTranslator:
         if is_mock:
             return self.translate_mock()
 
-        # manually embed the noun phrase in a <p> tag
-        num_left_spaces, num_right_spaces = self.count_leading_and_trailing_whitespace(self.parsed_text[1])
-        s_text = self.parsed_text[1].strip()
-        s_html = self.parsed_text[0] + '<p>' + s_text + '</p>' + self.parsed_text[2]
-        result = self.translate_client.translate(s_html, 
-                                            target_language=target_lang, 
-                                            source_language=src_lang,
-                                            format_='html')
-        
-        first_html_tag_pos = result["translatedText"].find('<p>')
-        last_html_tag_pos = result["translatedText"].find('</p>')
+        spaces = [self.count_leading_and_trailing_whitespace(parse[1]) for parse in self.parsed_texts]
 
-        translated_part = result["translatedText"][first_html_tag_pos + 3: last_html_tag_pos]
+        need_translation_strs = [parse[1].strip() for parse in self.parsed_texts]
+        full_strs = [self.parsed_texts[i][0] + '<p>' + need_translation_strs[i] + ' </p>' + self.parsed_texts[i][2]  for i in range(len(self.parsed_texts))]
 
-        translated_part = ' ' * num_left_spaces + translated_part + ' ' * num_right_spaces
+        result = self.translate_client.translate_text(contents=full_strs, 
+                                                      target_language_code=target_lang, 
+                                                      source_language_code=src_lang, 
+                                                      mime_type='text/html',
+                                                      parent='projects/disco-beach-300422'
+                                                      )
 
-        # print('--------------')
-        # print(self.parsed_text[1])
-        # print(translated_part)
-        # print(num_left_spaces, num_right_spaces)
-        # print('--------------')
-
-        return self.parsed_text[0] + translated_part + self.parsed_text[2]
+        translations = []
+        for i, translation in enumerate(result.translations):
+            first_html_tag_pos = translation.translated_text.find('<p>')
+            last_html_tag_pos = translation.translated_text.find('</p>')
+            translated_bit = translation.translated_text[first_html_tag_pos + 3 + 1: last_html_tag_pos]
+            translated_bit = ' ' * spaces[i][0] + translated_bit + ' ' * spaces[i][1]
+            full_translation = self.parsed_texts[i][0] + translated_bit + self.parsed_texts[i][2]
+            translations.append(full_translation)
+        return translations
+       
     
     def translate_mock(self):
         return 'this is un buen translaction que is not quite finished'

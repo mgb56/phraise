@@ -6,24 +6,31 @@ nlp = spacy.load('en_core_web_sm')
 
 # given a sentence, extract a noun phrase and translte it
 class PartialParser:
-    def __init__(self, sentence, user_pref_range=(3, 5), is_noun_chunks=False):
-        self.sentence = sentence
-        self.doc = nlp(sentence)
+    def __init__(self, sentences, user_pref_range=(3, 5), is_noun_chunks=False):
+        self.sentences = sentences
+        self.docs = [nlp(sentence) for sentence in sentences]
         self.user_pref_range = user_pref_range
         
         # precompute the chunks
         self.is_noun_chunks = is_noun_chunks
         if self.is_noun_chunks:
-            self.chunks = self.generate_noun_chunk_sorted_arr()
+            self.chunks = [self.generate_noun_chunk_sorted_arr(k) for k in range(len(sentences))]
         else:
-            self.chunks = self.generate_any_chunk_sorted_arr()
+            self.chunks = [self.generate_any_chunk_sorted_arr(k) for k in range(len(sentences))]
 
-    # return as [first_part_of_sentence, noun phrase, rest of sentence]
     def partial_parse(self):
+        parses = []
+        for i in range(len(self.sentences)):
+            parse = self.__partial_parse(i)
+            parses.append(parse)
+        return parses
+
+
+    def __partial_parse(self, k):
         if self.user_pref_range:
-            noun_phrase = self.select_chunk_with_pref()
+            noun_phrase = self.select_chunk_with_pref(k)
         else:
-            noun_phrase = self.select_chunk_no_pref()
+            noun_phrase = self.select_chunk_no_pref(k)
 
         visited = set()
         for token in noun_phrase:
@@ -32,7 +39,7 @@ class PartialParser:
         first = True
         found_np = False
         res = []
-        for token in self.doc:
+        for token in self.docs[k]:
             if tuple(token.tensor) in visited and first:
                 first = False
                 if not found_np:
@@ -61,34 +68,34 @@ class PartialParser:
         
         return res
     
-    def select_chunk_no_pref(self):
-        if not self.is_noun_chunks and len(self.chunks) > 1:
-            upper = len(self.chunks) - 2 # never select the full sentence
+    def select_chunk_no_pref(self, k):
+        if not self.is_noun_chunks and len(self.chunks[k]) > 1:
+            upper = len(self.chunks[k]) - 2 # never select the full sentence
         else:
-            upper = len(self.chunks) - 1
+            upper = len(self.chunks[k]) - 1
 
         rand_index = randint(0, upper)
-        return self.chunks[rand_index][0]
+        return self.chunks[k][rand_index][0]
 
-    def select_chunk_with_pref(self):
+    def select_chunk_with_pref(self, k):
         # if the shortest noun chunk is still too long, use it anyway
-        if self.chunks[0][1] > self.user_pref_range[1]:
-            return self.chunks[0][0]
+        if self.chunks[k][0][1] > self.user_pref_range[1]:
+            return self.chunks[k][0][0]
         # if the longest noun chunk is still too short, use it anyway
-        elif self.chunks[-1][1] < self.user_pref_range[0]:
-            return self.chunks[-1][0]
+        elif self.chunks[k][-1][1] < self.user_pref_range[0]:
+            return self.chunks[k][-1][0]
 
         first_valid_index = None
         last_valid_index = None
 
-        for i, (chunk, chunk_len) in enumerate(self.chunks):
+        for i, (chunk, chunk_len) in enumerate(self.chunks[k]):
             if self.user_pref_range[0] <= chunk_len <= self.user_pref_range[1]:
                 if first_valid_index is None:
                     first_valid_index = i
 
                 last_valid_index = i
 
-            elif chunk_len <= self.user_pref_range[0] and i + 1 < len(self.chunks) and self.chunks[i+1][1] >= self.user_pref_range[1]:
+            elif chunk_len <= self.user_pref_range[0] and i + 1 < len(self.chunks) and self.chunks[k][i+1][1] >= self.user_pref_range[1]:
                 if first_valid_index is None:
                     first_valid_index = i
 
@@ -101,19 +108,19 @@ class PartialParser:
         # select an index at random between first_valid_index and last_valid_index at random
         rand_index = randint(first_valid_index, last_valid_index)
         
-        return self.chunks[rand_index][0]
+        return self.chunks[k][rand_index][0]
     
-    def generate_any_chunk_sorted_arr(self):
+    def generate_any_chunk_sorted_arr(self, k):
         subtree_arr = []
-        for token in self.doc:
-            children_span = self.doc[token.left_edge.i : token.right_edge.i+1]
+        for token in self.docs[k]:
+            children_span = self.docs[k][token.left_edge.i : token.right_edge.i+1]
             subtree_arr.append((children_span, len(children_span)))
         subtree_arr.sort(key=lambda x:x[1])
 
         return subtree_arr
     
-    def generate_noun_chunk_sorted_arr(self):
-        noun_chunks = [(noun_chunk, len(noun_chunk)) for noun_chunk in self.doc.noun_chunks]
+    def generate_noun_chunk_sorted_arr(self, k):
+        noun_chunks = [(noun_chunk, len(noun_chunk)) for noun_chunk in self.docs[k].noun_chunks]
         noun_chunks.sort(key=lambda x:x[1])
 
         return noun_chunks
