@@ -11,10 +11,7 @@ nltk.download('words')
 dictionary = set(nltk.corpus.words.words())
 
 @app.route('/', methods=['POST'])
-def hello_world():
-    if request.method != 'POST':
-        return 'not currently supported'
-    
+def hello_world():    
     json_req = request.get_json()
     json_req = [sentence if real_words_percentage(sentence, dictionary) > 0.5 else '' for sentence in json_req]
     translator = PartialTranslator(json_req, is_mock=True, try_free=True)
