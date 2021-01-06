@@ -56,32 +56,34 @@ function highlightTranslation(
   var highlightedTranslation = document.createElement("span");
   highlightedTranslation.setAttribute("style", "background-color:lightgreen;");
 
+  var translationTextLength = translation.textContent.length;
+
   // get rid of pesky trailing space in translation
   if (
     translation.textContent.substring(
-      translation.textContent.length - 2,
-      translation.textContent.length
+      translationTextLength - 2,
+      translationTextLength
     ) == "  "
   ) {
     translation.textContent = translation.textContent.substring(
       0,
-      translation.textContent.length - 2
+      translationTextLength - 2
     );
     afterTranslation.textContent = " " + afterTranslation.textContent;
-  } else if (
-    translation.textContent[translation.textContent.length - 1] == " "
-  ) {
+  } else if (translation.textContent[translationTextLength - 1] == " ") {
     translation.textContent = translation.textContent.substring(
       0,
-      translation.textContent.length - 1
+      translationTextLength - 1
     );
   }
+
+  translationTextLength = translation.textContent.length;
 
   // get rid of potential leading space
   if (translation.textContent[0] == " ") {
     translation.textContent = translation.textContent.substring(
       1,
-      translation.textContent.length
+      translationTextLength
     );
     beforeTranslation.textContent = beforeTranslation.textContent + " ";
   }
@@ -92,8 +94,8 @@ function highlightTranslation(
 
 function processTranslations(translations) {
   console.log(translations);
-  for (var i = 0; i < translatedNodes.length; i++) {
-    // if 3 parts are all empty, replace with original text
+  var translatedNodesLength = translatedNodes.length;
+  for (var i = 0; i < translatedNodesLength; i++) {
     if (
       translations[i][0] == "" &&
       translations[i][1] == "" &&
