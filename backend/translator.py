@@ -66,13 +66,13 @@ class PartialTranslator:
             translated_bit = ' ' * spaces[i][0] + translated_bit + ' ' * spaces[i][1]
             #full_translation = self.parsed_texts[i][0] + '<p>' + translated_bit + '</p>' + self.parsed_texts[i][2]
             #translations.append(full_translation)
-            arr = [self.parsed_texts[i][0], (translated_bit, self.parsed_texts[i][1]), self.parsed_texts[i][2]] 
+            arr = [self.parsed_texts[i][0], translated_bit, self.parsed_texts[i][2], self.parsed_texts[i][1]] 
             translations.append(arr)
         return translations
        
     
     def translate_mock(self):
-        res = ['this is ', ('un buen translacion que ', 'a decent translation that '), 'is not quite finished']
+        res = ['this is ', 'un buen translacion que ', 'is not quite finished', 'a decent translation that ']
         return [res for i in range(len(self.sentences))]
     
     # TODO: let's do this client-side

@@ -21,7 +21,7 @@ import time
 sentences = ['this is a  test to see how the translation is working']
 
 curr_time = time.time()
-translator = PartialTranslator(sentences, is_mock=False)
+translator = PartialTranslator(sentences, is_mock=True)
 next_time = time.time()
 translated = translator.translate(src_lang='en', target_lang='es')
 final_time = time.time()
