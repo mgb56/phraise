@@ -26,21 +26,20 @@ function walk(node) {
       tagName !== "CITE" &&
       node.parentNode.tagName !== "A"
     ) {
-      // if (node.nodeType == 1) {
-      //   const nodeClass = node.getAttribute("class");
-      //   if (
-      //     nodeClass &&
-      //     (nodeClass.indexOf("noprint") !== -1 ||
-      //       nodeClass.indexOf("hidden") !== -1)
-      //   ) {
-      //     // no-op
-      //   } else {
-      //     walk(node);
-      //   }
-      // } else {
-      //   walk(node);
-      // }
-      walk(node);
+      if (node.nodeType == 1) {
+        const nodeClass = node.getAttribute("class");
+        if (
+          nodeClass &&
+          (nodeClass.indexOf("noprint") !== -1 ||
+            nodeClass.indexOf("hidden") !== -1)
+        ) {
+          // no-op
+        } else {
+          walk(node);
+        }
+      } else {
+        walk(node);
+      }
     }
     node = node.nextSibling;
   }
@@ -134,6 +133,6 @@ function processTranslations(translations) {
 }
 
 console.log("about to send message?");
-chrome.runtime.sendMessage({ array: translatedText }, function (response) {
+chrome.runtime.sendMessage({ array: translatedText }, function(response) {
   processTranslations(response.translatedText);
 });
