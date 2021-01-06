@@ -13,13 +13,15 @@ class PartialTranslator:
 
         self.parser = PartialParser(sentences)
         self.parsed_texts = self.parser.partial_parse()
-        self.translate_client = translate.TranslationServiceClient()
+        
         self.try_free = try_free
         if self.try_free:
             self.free_translator = Translator(service_urls=[
                 'translate.google.com',
                 'translate.google.co.kr',
             ])
+        else:
+            self.translate_client = translate.TranslationServiceClient()
         
     
     def translate(self, target_lang, src_lang):

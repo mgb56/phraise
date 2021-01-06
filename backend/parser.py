@@ -27,7 +27,7 @@ class PartialParser:
             if len(self.sentences[i]) > 0:
                 parse = self.__partial_parse(i)
             else:
-                parses.append(['', '', ''])
+                parse = ['', '', '']
             parses.append(parse)
         return parses
 
