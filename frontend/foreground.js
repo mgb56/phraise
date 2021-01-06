@@ -2,7 +2,7 @@ var translatedNodes = [];
 var translatedText = [];
 
 function handleText(node) {
-  if (Math.random() < 0.005 && node.textContent.trim().split(" ").length > 3) {
+  if (Math.random() < 1 && node.textContent.trim().split(" ").length > 3) {
     var numChars = node.textContent.match(/[a-zA-Z]/g).length;
     if (numChars >= 15) {
       console.log(node.textContent);
@@ -26,7 +26,20 @@ function walk(node) {
       tagName !== "CITE" &&
       node.parentNode.tagName !== "A"
     ) {
-      walk(node);
+      if (node.nodeType == 1) {
+        const nodeClass = node.getAttribute("class");
+        if (
+          nodeClass &&
+          (nodeClass.indexOf("noprint") !== -1 ||
+            nodeClass.indexOf("hidden") !== -1)
+        ) {
+          // no-op
+        } else {
+          walk(node);
+        }
+      } else {
+        walk(node);
+      }
     }
     node = node.nextSibling;
   }

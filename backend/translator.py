@@ -63,7 +63,7 @@ class PartialTranslator:
        
     
     def translate_mock(self):
-        return 'this is un buen translaction que is not quite finished'
+        return ['this is un buen translaction que is not quite finished' for i in range(len(self.sentences))]
     
     def count_leading_and_trailing_whitespace(self, sentence):
         saw_char = False
