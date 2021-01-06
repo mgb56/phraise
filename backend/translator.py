@@ -57,7 +57,7 @@ class PartialTranslator:
             last_html_tag_pos = translation.find('</p>')
             translated_bit = translation[first_html_tag_pos + 3 + 1: last_html_tag_pos]
             translated_bit = ' ' * spaces[i][0] + translated_bit + ' ' * spaces[i][1]
-            full_translation = self.parsed_texts[i][0] + translated_bit + self.parsed_texts[i][2]
+            full_translation = self.parsed_texts[i][0] + '<p>' + translated_bit + '</p>' + self.parsed_texts[i][2]
             translations.append(full_translation)
         return translations
        
