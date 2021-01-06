@@ -49,90 +49,83 @@ walk(document.getRootNode());
 console.log(translatedNodes);
 
 function highlightTranslation(
-  before_translation,
+  beforeTranslation,
   translation,
-  after_translation
+  afterTranslation
 ) {
   var highlightedTranslation = document.createElement("span");
   highlightedTranslation.setAttribute("style", "background-color:lightgreen;");
 
-  highlightedTranslationText = document.createTextNode(
-    translation.textContent.substring(0, translation.textContent.length - 1)
-  );
-
-  // get rid of pesky trailing space in translation (happens when translation is followed by a space, rather than punctuation)
+  // get rid of pesky trailing space in translation
   if (
-    highlightedTranslationText.textContent[
-      highlightedTranslationText.textContent.length - 1
-    ] == " "
+    translation.textContent.substring(
+      translation.textContent.length - 2,
+      translation.textContent.length
+    ) == "  "
   ) {
-    highlightedTranslationText.textContent = highlightedTranslationText.textContent.substring(
+    translation.textContent = translation.textContent.substring(
       0,
-      highlightedTranslationText.textContent.length - 1
+      translation.textContent.length - 2
     );
-    after_translation.textContent = " " + after_translation.textContent;
+    afterTranslation.textContent = " " + afterTranslation.textContent;
+  } else if (
+    translation.textContent[translation.textContent.length - 1] == " "
+  ) {
+    translation.textContent = translation.textContent.substring(
+      0,
+      translation.textContent.length - 1
+    );
   }
 
   // get rid of potential leading space
-  if (highlightedTranslationText.textContent[0] == " ") {
-    highlightedTranslationText.textContent = highlightedTranslationText.textContent.substring(
+  if (translation.textContent[0] == " ") {
+    translation.textContent = translation.textContent.substring(
       1,
-      highlightedTranslationText.textContent.length
+      translation.textContent.length
     );
-    before_translation.textContent = before_translation.textContent + " ";
+    beforeTranslation.textContent = beforeTranslation.textContent + " ";
   }
 
-  highlightedTranslation.appendChild(highlightedTranslationText);
+  highlightedTranslation.appendChild(translation);
   return highlightedTranslation;
 }
 
 function processTranslations(translations) {
   console.log(translations);
   for (var i = 0; i < translatedNodes.length; i++) {
-    // put p tags in node text
-    translatedNodes[i].textContent = translations[i];
+    // if 3 parts are all empty, replace with original text
+    if (
+      translations[i][0] == "" &&
+      translations[i][1] == "" &&
+      translations[i][2] == ""
+    ) {
+      continue;
+    }
 
-    // translatedNodes[i] has stuff before translation with <p> tag at the end
-    // translation_and_after_node has the translation
-    // after_translated_node has the stuff after the translation with a </p> at the beginning
-    var begin_tag_index = translations[i].search("<p>");
-
-    // new node containing stuff from translation onward
-    var translation_and_after_node = translatedNodes[i].splitText(
-      begin_tag_index + 3
-    );
-
-    var end_tag_index = translation_and_after_node.textContent.search("</p>");
-
-    // new node containing stuff after translation
-    var after_translated_node = translation_and_after_node.splitText(
-      end_tag_index
-    );
-
-    // remove p tags
-    translatedNodes[i].textContent = translatedNodes[i].textContent.substring(
-      0,
-      translatedNodes[i].textContent.length - 3
-    );
-    after_translated_node.textContent = after_translated_node.textContent.substring(
-      4,
-      after_translated_node.textContent.length
-    );
+    // create a node for each part of the string
+    translatedNodes[i].textContent = translations[i][0];
+    var translation = document.createTextNode(translations[i][1]);
+    var afterTranslation = document.createTextNode(translations[i][2]);
 
     var highlightedTranslation = highlightTranslation(
       translatedNodes[i],
-      translation_and_after_node,
-      after_translated_node
+      translation,
+      afterTranslation
     );
 
-    translation_and_after_node.parentNode.replaceChild(
+    // make the three nodes siblings
+    translatedNodes[i].parentNode.insertBefore(
       highlightedTranslation,
-      translation_and_after_node
+      translatedNodes[i].nextSibling
+    );
+    translatedNodes[i].parentNode.insertBefore(
+      afterTranslation,
+      highlightedTranslation.nextSibling
     );
   }
 }
 
 console.log("about to send message?");
-chrome.runtime.sendMessage({ array: translatedText }, function(response) {
+chrome.runtime.sendMessage({ array: translatedText }, function (response) {
   processTranslations(response.translatedText);
 });
