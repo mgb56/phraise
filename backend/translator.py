@@ -16,10 +16,13 @@ class PartialTranslator:
         
         self.try_free = try_free
         if self.try_free:
-            self.free_translator = Translator(service_urls=[
-                'translate.google.com',
-                'translate.google.co.kr',
-            ])
+            # self.free_translator = Translator(service_urls=[
+            #     'translate.google.com',
+            #     'translate.google.co.kr',
+            # ])
+
+            self.free_translator = Translator(service_urls=['translate.googleapis.com','translate.google.com','translate.google.co.kr'])
+            self.free_translator.raise_Exception = True
         else:
             self.translate_client = translate.TranslationServiceClient()
         
@@ -40,10 +43,12 @@ class PartialTranslator:
         full_strs = [self.parsed_texts[i][0] + '<p>' + need_translation_strs[i] + ' </p>' + self.parsed_texts[i][2]  for i in range(len(self.parsed_texts))]
 
         if self.try_free:
-            text_result = []
-            for i in range(len(full_strs)):
-                result = self.free_translator.translate(full_strs[i], dest=target_lang, src=src_lang)
-                text_result.append(result.text)
+            result = self.free_translator.translate(full_strs, dest=target_lang, src=src_lang)
+            text_result = [translation.text for translation in result]
+            # text_result = []
+            # for i in range(len(full_strs)):
+            #     result = self.free_translator.translate(full_strs[i], dest=target_lang, src=src_lang)
+            #     text_result.append(result.text)
         else:
             result = self.translate_client.translate_text(contents=full_strs, 
                                                       target_language_code=target_lang, 
@@ -61,15 +66,16 @@ class PartialTranslator:
             translated_bit = ' ' * spaces[i][0] + translated_bit + ' ' * spaces[i][1]
             #full_translation = self.parsed_texts[i][0] + '<p>' + translated_bit + '</p>' + self.parsed_texts[i][2]
             #translations.append(full_translation)
-            arr = [self.parsed_texts[i][0], translated_bit, self.parsed_texts[i][2]] 
+            arr = [self.parsed_texts[i][0], (translated_bit, self.parsed_texts[i][1]), self.parsed_texts[i][2]] 
             translations.append(arr)
         return translations
        
     
     def translate_mock(self):
-        res = ['this is ', 'un buen translacion que ', 'is not quite finished']
+        res = ['this is ', ('un buen translacion que ', 'a decent translation that '), 'is not quite finished']
         return [res for i in range(len(self.sentences))]
     
+    # TODO: let's do this client-side
     def count_leading_and_trailing_whitespace(self, sentence):
         saw_char = False
         num_left_spaces = 0

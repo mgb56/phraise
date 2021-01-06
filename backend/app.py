@@ -1,9 +1,11 @@
 from flask import Flask, request, Response
+import json
+import nltk
+import os
+
 from translator import PartialTranslator
 from lib import real_words_percentage
 
-import json
-import nltk
 
 app = Flask(__name__)
 
@@ -26,7 +28,6 @@ def hello_world():
 
 
 if __name__ == '__main__':
-    import os  
+      
     port = int(os.environ.get('PORT', 33507)) 
-    #context = ('server.crt', 'server.key')
-    app.run(host='0.0.0.0', port=port) #, ssl_context='adhoc')
+    app.run(host='0.0.0.0', port=port)
