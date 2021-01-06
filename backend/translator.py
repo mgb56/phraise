@@ -57,13 +57,16 @@ class PartialTranslator:
             last_html_tag_pos = translation.find('</p>')
             translated_bit = translation[first_html_tag_pos + 3 + 1: last_html_tag_pos]
             translated_bit = ' ' * spaces[i][0] + translated_bit + ' ' * spaces[i][1]
-            full_translation = self.parsed_texts[i][0] + '<p>' + translated_bit + '</p>' + self.parsed_texts[i][2]
-            translations.append(full_translation)
+            #full_translation = self.parsed_texts[i][0] + '<p>' + translated_bit + '</p>' + self.parsed_texts[i][2]
+            #translations.append(full_translation)
+            arr = [self.parsed_texts[i][0], translated_bit, self.parsed_texts[i][2]] 
+            translations.append(arr)
         return translations
        
     
     def translate_mock(self):
-        return ['this is un buen translaction que is not quite finished' for i in range(len(self.sentences))]
+        res = ['this is', 'un buen translacion que', 'is not quite finished']
+        return [res for i in range(len(self.sentences))]
     
     def count_leading_and_trailing_whitespace(self, sentence):
         saw_char = False

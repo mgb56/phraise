@@ -7,6 +7,9 @@ nlp = spacy.load('en_core_web_sm')
 # given a sentence, extract a noun phrase and translte it
 class PartialParser:
     def __init__(self, sentences, user_pref_range=(3, 5), is_noun_chunks=False):
+        print('---------------')
+        print(sentences)
+        print('---------------')
         self.sentences = sentences
         self.docs = [nlp(sentence) for sentence in sentences]
         self.user_pref_range = user_pref_range
@@ -21,7 +24,10 @@ class PartialParser:
     def partial_parse(self):
         parses = []
         for i in range(len(self.sentences)):
-            parse = self.__partial_parse(i)
+            if len(self.sentences[i]) > 0:
+                parse = self.__partial_parse(i)
+            else:
+                parses.append(['', '', ''])
             parses.append(parse)
         return parses
 
@@ -78,6 +84,8 @@ class PartialParser:
         return self.chunks[k][rand_index][0]
 
     def select_chunk_with_pref(self, k):
+        print(self.chunks)
+        print(k)
         # if the shortest noun chunk is still too long, use it anyway
         if self.chunks[k][0][1] > self.user_pref_range[1]:
             return self.chunks[k][0][0]
