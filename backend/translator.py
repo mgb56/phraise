@@ -33,7 +33,7 @@ class PartialTranslator:
         else:
             return self.translate_real(target_lang, src_lang, left_trim=left_trim, right_trim=right_trim)
     
-    def translate_real(self, target_lang, src_lang, is_mock=False):
+    def translate_real(self, target_lang, src_lang, is_mock=False, left_trim=None, right_trim=None):
         if is_mock:
             return self.translate_mock()
         
@@ -87,7 +87,7 @@ class PartialTranslator:
        
     
     def translate_mock(self):
-        res = ['this is ', 'un buen translacion que ', 'is not quite finished', 'a decent translation that ']
+        res = ['this is ', 'un buen translacion que ', 'is not quite finished', 'a decent translation that']
         return [res for i in range(len(self.sentences))]
     
     # TODO: let's do this client-side

@@ -18,16 +18,16 @@ import time
 #     'If you want base NPs, i.e. NPs without coordination, prepositional phrases or relative clauses, you can use the noun_chunks iterator on the Doc and Span objects'
 # ]
 
-sentences = ['this is a  test to see how the translation is working']
+sentences = ['this is a test to see how the translation is working']
 
 curr_time = time.time()
-translator = PartialTranslator(sentences, is_mock=False)
+translator = PartialTranslator(sentences, is_mock=True)
 next_time = time.time()
 translated = translator.translate(src_lang='en', target_lang='es')
 final_time = time.time()
 
 #print(next_time - curr_time)
 #print(final_time - next_time)
-#print(translated)
+print(translated)
 #print(''.join(translated[0]))
 
