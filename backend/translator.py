@@ -27,13 +27,13 @@ class PartialTranslator:
             self.translate_client = translate.TranslationServiceClient()
         
     
-    def translate(self, target_lang, src_lang):
+    def translate(self, target_lang, src_lang, left_trim=None, right_trim=None):
         if self.is_mock:
             return self.translate_mock()
         else:
-            return self.translate_real(target_lang, src_lang)
+            return self.translate_real(target_lang, src_lang, left_trim=left_trim, right_trim=right_trim)
     
-    def translate_real(self, target_lang, src_lang, is_mock=False, left_trim=None, right_trim=None):
+    def translate_real(self, target_lang, src_lang, is_mock=False):
         if is_mock:
             return self.translate_mock()
         
