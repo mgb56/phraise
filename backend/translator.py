@@ -38,20 +38,20 @@ class PartialTranslator:
             return self.translate_mock()
         
         # there's no need to trim the part we're gonna translate fully
+        new_left_context_arr = []
+        new_right_context_arr = []
         for i in range(len(self.parsed_texts)):
             self.parsed_texts[i][1] = self.convert_token_arr_to_str(self.parsed_texts[i][1])
-            #self.parsed_texts[i][1] = ''.join([token.text_with_ws for token in self.parsed_texts[i][1]])
-
-
+            new_left_context = self.trim_array_based_on_context(self.parsed_texts[i][0], left_trim, is_left=True)
+            new_right_context = self.trim_array_based_on_context(self.parsed_texts[i][2], right_trim, is_left=False)
+            new_left_context_arr.append(new_left_context)
+            new_right_context_arr.append(new_right_context)
 
         spaces = [self.count_leading_and_trailing_whitespace(parse[1]) for parse in self.parsed_texts]
         need_translation_strs = [parse[1].strip() for parse in self.parsed_texts]
 
         # if left trim and right trim are set, we won't translate all the context
-        new_left_context = self.trim_array_based_on_context(self.parsed_texts[i][0], left_trim, is_left=True)
-        new_right_context = self.trim_array_based_on_context(self.parsed_texts[i][2], right_trim, is_left=False)
-
-        full_strs = [new_left_context + '<p>' + need_translation_strs[i] + ' </p>' + new_right_context  for i in range(len(self.parsed_texts))]
+        full_strs = [new_left_context_arr[i] + '<p>' + need_translation_strs[i] + ' </p>' + new_right_context_arr[i]  for i in range(len(self.parsed_texts))]
 
         if self.try_free:
             result = self.free_translator.translate(full_strs, dest=target_lang, src=src_lang)
