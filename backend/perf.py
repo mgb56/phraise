@@ -11,14 +11,14 @@ import time
 #     'finally, we are at the end of the performance testing'
 # ]
 
-sentences = [
-    'How can I extract noun phrases from text using spacy?',
-    'I am not referring to part of speech tags',
-    'In the documentation I cannot find anything about noun phrases or regular parse trees.',
-    'If you want base NPs, i.e. NPs without coordination, prepositional phrases or relative clauses, you can use the noun_chunks iterator on the Doc and Span objects'
-]
+# sentences = [
+#     'How can I extract noun phrases from text using spacy?',
+#     'I am not referring to part of speech tags',
+#     'In the documentation I cannot find anything about noun phrases or regular parse trees.',
+#     'If you want base NPs, i.e. NPs without coordination, prepositional phrases or relative clauses, you can use the noun_chunks iterator on the Doc and Span objects'
+# ]
 
-#sentences = ['this is a test to see how the translation is working']
+sentences = ['the big red dog ran up the tree']
 
 curr_time = time.time()
 translator = PartialTranslator(sentences, is_mock=False)

@@ -52,7 +52,7 @@ class PartialTranslator:
 
         # if left trim and right trim are set, we won't translate all the context
         full_strs = [new_left_context_arr[i] + '<p>' + need_translation_strs[i] + ' </p>' + new_right_context_arr[i]  for i in range(len(self.parsed_texts))]
-
+        print(full_strs)
         if self.try_free:
             result = self.free_translator.translate(full_strs, dest=target_lang, src=src_lang)
             text_result = [translation.text for translation in result]
@@ -117,11 +117,34 @@ class PartialTranslator:
     def trim_array_based_on_context(self, token_arr, num_context, is_left=True):
         if not num_context:
             return ''.join([token.text_with_ws for token in token_arr])
+        # if is_left:
+        #     considered_tokens = token_arr[-1 * num_context:]
+        # else:
+        #     considered_tokens = token_arr[:num_context]
+
         if is_left:
-            considered_tokens = token_arr[-1 * num_context:]
+            i = len(token_arr) - 1
+            count = 0
+            while i >= 0 and count < num_context:
+                if not token_arr[i].is_punct:
+                    count += 1
+                if count >= num_context:
+                    break
+                else:
+                    i -= 1
+            considered_tokens = token_arr[i:]
         else:
-            considered_tokens = token_arr[:num_context]
-        
+            i = 0
+            count = 0
+            while i < len(token_arr) and count < num_context:
+                if not token_arr[i].is_punct:
+                    count += 1
+                if count >= num_context:
+                    break
+                else:
+                    i += 1
+            considered_tokens = token_arr[:i+1]
+
         return ''.join([token.text_with_ws for token in considered_tokens])
     
     def convert_token_arr_to_str(self, arr):
