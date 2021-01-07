@@ -87,7 +87,7 @@ class PartialTranslator:
        
     
     def translate_mock(self):
-        res = ['this is ', 'un buen translacion que ', 'is not quite finished', 'a decent translation that']
+        res = [' this is ', 'un buen translacion que  ', 'is not quite finished', 'a decent translation that']
         return [res for i in range(len(self.sentences))]
     
     # TODO: let's do this client-side

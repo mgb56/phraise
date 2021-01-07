@@ -74,6 +74,7 @@ function applyStyling(
   untranslation.appendChild(translation);
 
   var highlightingStyle = ".translation { background-color:lightgreen; }";
+  // TODO: change to id
   var hoverOffStyle =
     "." + highlightedTranslation.className + ":hover span { display:none; }";
   var hoverOnStyle =
