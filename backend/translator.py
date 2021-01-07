@@ -52,7 +52,7 @@ class PartialTranslator:
 
         # if left trim and right trim are set, we won't translate all the context
         full_strs = [new_left_context_arr[i] + '<p>' + need_translation_strs[i] + ' </p>' + new_right_context_arr[i]  for i in range(len(self.parsed_texts))]
-        print(full_strs)
+
         if self.try_free:
             result = self.free_translator.translate(full_strs, dest=target_lang, src=src_lang)
             text_result = [translation.text for translation in result]
