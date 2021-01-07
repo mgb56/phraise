@@ -1,17 +1,34 @@
-let changeColor = document.getElementById("changeColor");
+// let changeColor = document.getElementById("changeColor");
 
-chrome.storage.sync.get("color", function(data) {
-  changeColor.style.backgroundColor = data.color;
-  changeColor.setAttribute("value", data.color);
-});
+// chrome.storage.sync.get("color", function(data) {
+//   changeColor.style.backgroundColor = data.color;
+//   changeColor.setAttribute("value", data.color);
+// });
 
-changeColor.onclick = function(element) {
-  let color = element.target.value;
-  chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-    chrome.tabs.executeScript(tabs[0].id, {
-      code: 'document.body.style.backgroundColor = "' + color + '";'
-    });
-  });
+// changeColor.onclick = function(element) {
+//   let color = element.target.value;
+//   chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+//     chrome.tabs.executeScript(tabs[0].id, {
+//       code: 'document.body.style.backgroundColor = "' + color + '";'
+//     });
+//   });
+// };
+
+var linkParis = document.getElementById("link-Paris");
+openCity(linkParis, "Paris"); // open city Paris so it is pre-selected
+
+linkParis.onclick = function(element) {
+  openCity(linkParis, "Paris");
+};
+
+var linkLondon = document.getElementById("link-London");
+linkLondon.onclick = function(element) {
+  openCity(linkLondon, "London");
+};
+
+var linkTokyo = document.getElementById("link-Tokyo");
+linkTokyo.onclick = function(element) {
+  openCity(linkTokyo, "Tokyo");
 };
 
 function openCity(evt, cityName) {
@@ -34,23 +51,3 @@ function openCity(evt, cityName) {
   document.getElementById(cityName).style.display = "block";
   evt.className += " active";
 }
-
-document.addEventListener("DOMContentLoaded", function() {
-  var linkParis = document.getElementById("link-Paris");
-  // onClick's logic below:
-  linkParis.addEventListener("click", function() {
-    openCity(linkParis, "Paris");
-  });
-
-  var linkLondon = document.getElementById("link-London");
-  // onClick's logic below:
-  linkLondon.addEventListener("click", function() {
-    openCity(linkLondon, "London");
-  });
-
-  var linkTokyo = document.getElementById("link-Tokyo");
-  // onClick's logic below:
-  linkTokyo.addEventListener("click", function() {
-    openCity(linkTokyo, "Tokyo");
-  });
-});
