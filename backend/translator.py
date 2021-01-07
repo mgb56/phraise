@@ -90,7 +90,6 @@ class PartialTranslator:
         res = [' this is ', 'un buen translacion que  ', 'is not quite finished', 'a decent translation that']
         return [res for i in range(len(self.sentences))]
     
-    # TODO: let's do this client-side
     def count_leading_and_trailing_whitespace(self, sentence):
         saw_char = False
         num_left_spaces = 0
@@ -114,6 +113,7 @@ class PartialTranslator:
 
         return (num_left_spaces, num_right_spaces)
     
+    # TODO: num_context should only count for non-punctuation tokens
     def trim_array_based_on_context(self, token_arr, num_context, is_left=True):
         if not num_context:
             return ''.join([token.text_with_ws for token in token_arr])
