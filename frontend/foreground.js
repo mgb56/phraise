@@ -48,13 +48,43 @@ function walk(node) {
 walk(document.getRootNode());
 console.log(translatedNodes);
 
-function highlightTranslation(
+// dynamically assign different ID's to each translation
+var translationID = 0;
+
+// untranslated is a string, the rest of the params are nodes
+function applyStyling(
   beforeTranslation,
   translation,
-  afterTranslation
+  afterTranslation,
+  untranslated
 ) {
+  // TODO: move spacing stuff to different function
+  if (untranslated[untranslated.length - 1] == " ") {
+    untranslated = untranslated.substring(0, untranslated.length - 1);
+  }
+
   var highlightedTranslation = document.createElement("span");
-  highlightedTranslation.setAttribute("style", "background-color:lightgreen;");
+  highlightedTranslation.className = "translation";
+  var id = "hover" + translationID.toString();
+  highlightedTranslation.id = id;
+
+  // to remove on hover
+  var untranslation = document.createElement("span");
+  untranslation.className = "untranslation";
+  untranslation.appendChild(translation);
+
+  var highlightingStyle = ".translation { background-color:lightgreen; }";
+  var hoverOffStyle =
+    "." + highlightedTranslation.className + ":hover span { display:none; }";
+  var hoverOnStyle =
+    "#" + id + ':hover::before { content:"' + untranslated + '"; }';
+
+  // TODO: figure out how to import so stuff like these raw strings can be cleaned up
+  var style = document.createElement("style");
+  style.appendChild(
+    document.createTextNode(highlightingStyle + hoverOffStyle + hoverOnStyle)
+  );
+  document.querySelector("head").appendChild(style);
 
   var translationTextLength = translation.textContent.length;
 
@@ -88,7 +118,7 @@ function highlightTranslation(
     beforeTranslation.textContent = beforeTranslation.textContent + " ";
   }
 
-  highlightedTranslation.appendChild(translation);
+  highlightedTranslation.appendChild(untranslation);
   return highlightedTranslation;
 }
 
@@ -106,13 +136,15 @@ function processTranslations(translations) {
 
     // create a node for each part of the string
     translatedNodes[i].textContent = translations[i][0];
-    var translation = document.createTextNode(translations[i][1]);
+    var translation = document.createElement("span");
+    translation.innerHTML = translations[i][1];
     var afterTranslation = document.createTextNode(translations[i][2]);
 
-    var highlightedTranslation = highlightTranslation(
+    var highlightedTranslation = applyStyling(
       translatedNodes[i],
       translation,
-      afterTranslation
+      afterTranslation,
+      translations[i][3]
     );
 
     // make the three nodes siblings
@@ -124,6 +156,8 @@ function processTranslations(translations) {
       afterTranslation,
       highlightedTranslation.nextSibling
     );
+
+    translationID++;
   }
 }
 
