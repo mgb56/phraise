@@ -47,27 +47,31 @@ class PartialParser:
                 first = False
                 if not found_np:
                     if len(res) == 0:
-                        res.append('')
+                        res.append([])
+                    if len(res) == 1:
+                        res.append([])
 
-                    res.append(noun_phrase.text_with_ws)
+                    res[1].append(noun_phrase)
 
                     found_np = True
             elif tuple(token.tensor) not in visited:
                 if found_np:
                     if len(res) == 2:
-                        res.append(token.text_with_ws)
+                        res.append([])
+                        res[2].append(token)
                     else:
-                        res[2] += token.text_with_ws
+                        res[2].append(token)
                 else:
                     if len(res) == 0:
-                        res.append(token.text_with_ws)
+                        res.append([])
+                        res[0].append(token)
                     else:
-                        res[0] += token.text_with_ws
+                        res[0].append(token)
         if len(res) == 1:
-            res.append('')
-            res.append('')
+            res.append([])
+            res.append([])
         elif len(res) == 2:
-            res.append('')
+            res.append([])
         
         return res
     
@@ -133,7 +137,7 @@ class PartialParser:
 
 
 #s = '               the dog ran up the blue fence'
-# s = 'the dog ran up the blue fence'
+# s = ['the dog ran up the blue fence']
 
 # translator = PartialParser(s)
 # res = translator.partial_parse()

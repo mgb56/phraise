@@ -33,14 +33,25 @@ class PartialTranslator:
         else:
             return self.translate_real(target_lang, src_lang)
     
-    def translate_real(self, target_lang, src_lang, is_mock=False):
+    def translate_real(self, target_lang, src_lang, is_mock=False, left_trim=None, right_trim=None):
         if is_mock:
             return self.translate_mock()
+        
+        # there's no need to trim the part we're gonna translate fully
+        for i in range(len(self.parsed_texts)):
+            self.parsed_texts[i][1] = self.convert_token_arr_to_str(self.parsed_texts[i][1])
+            #self.parsed_texts[i][1] = ''.join([token.text_with_ws for token in self.parsed_texts[i][1]])
+
+
 
         spaces = [self.count_leading_and_trailing_whitespace(parse[1]) for parse in self.parsed_texts]
-
         need_translation_strs = [parse[1].strip() for parse in self.parsed_texts]
-        full_strs = [self.parsed_texts[i][0] + '<p>' + need_translation_strs[i] + ' </p>' + self.parsed_texts[i][2]  for i in range(len(self.parsed_texts))]
+
+        # if left trim and right trim are set, we won't translate all the context
+        new_left_context = self.trim_array_based_on_context(self.parsed_texts[i][0], left_trim, is_left=True)
+        new_right_context = self.trim_array_based_on_context(self.parsed_texts[i][2], right_trim, is_left=False)
+
+        full_strs = [new_left_context + '<p>' + need_translation_strs[i] + ' </p>' + new_right_context  for i in range(len(self.parsed_texts))]
 
         if self.try_free:
             result = self.free_translator.translate(full_strs, dest=target_lang, src=src_lang)
@@ -66,7 +77,11 @@ class PartialTranslator:
             translated_bit = ' ' * spaces[i][0] + translated_bit + ' ' * spaces[i][1]
             #full_translation = self.parsed_texts[i][0] + '<p>' + translated_bit + '</p>' + self.parsed_texts[i][2]
             #translations.append(full_translation)
-            arr = [self.parsed_texts[i][0], translated_bit, self.parsed_texts[i][2], self.parsed_texts[i][1]] 
+
+            left_context = self.convert_token_arr_to_str(self.parsed_texts[i][0])
+            right_context = self.convert_token_arr_to_str(self.parsed_texts[i][2])
+
+            arr = [left_context, translated_bit, right_context, self.parsed_texts[i][1]] 
             translations.append(arr)
         return translations
        
@@ -98,11 +113,25 @@ class PartialTranslator:
             i -= 1 
 
         return (num_left_spaces, num_right_spaces)
+    
+    def trim_array_based_on_context(self, token_arr, num_context, is_left=True):
+        if not num_context:
+            return ''.join([token.text_with_ws for token in token_arr])
+        if is_left:
+            considered_tokens = token_arr[-1 * num_context:]
+        else:
+            considered_tokens = token_arr[:num_context]
+        
+        return ''.join([token.text_with_ws for token in considered_tokens])
+    
+    def convert_token_arr_to_str(self, arr):
+        return ''.join([token.text_with_ws for token in arr])
             
 
-# s = 'the big red dog ran up the tree'
-# translator = PartialTranslator(s)
+#s = ['the big red dog ran up the tree']
+#translator = PartialTranslator(s)
+
 # res = translator.count_leading_and_trailing_whitespace(' test  ')
 # print(res)
-# translation = translator.translate(target_lang='es', src_lang='en')
-# print(translation)
+#translation = translator.translate(target_lang='es', src_lang='en')
+#print(translation)
