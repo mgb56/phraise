@@ -182,6 +182,27 @@ for (var lang in languages) {
   languageSelection.appendChild(entry);
 }
 
+// Advanced Options
+var advancedOptions = document.getElementById("advancedOptions");
+advancedOptions.onclick = () => {
+  var samplingRateContainer = document.querySelector(".rs-container");
+  var wordDifficultyContainer =
+    samplingRateContainer.nextElementSibling.nextElementSibling;
+  var phraseLengthContainer =
+    wordDifficultyContainer.nextElementSibling.nextElementSibling;
+
+  if (wordDifficultyContainer.style.display === "none") {
+    wordDifficultyContainer.style.display = "block";
+  } else {
+    wordDifficultyContainer.style.display = "none";
+  }
+  if (phraseLengthContainer.style.display === "none") {
+    phraseLengthContainer.style.display = "block";
+  } else {
+    phraseLengthContainer.style.display = "none";
+  }
+};
+
 // Slider
 (function () {
   "use strict";
@@ -544,10 +565,30 @@ for (var lang in languages) {
   window.rSlider = RS;
 })();
 
-var mySlider = new rSlider({
-  target: "#sampleSlider",
+var samplingRateSlider = new rSlider({
+  target: "#samplingRateSlider",
   values: ["low", "medium", "high"],
   range: false,
+  tooltip: true,
+  scale: false,
+  labels: false,
+  width: 400,
+});
+
+var wordDifficultySlider = new rSlider({
+  target: "#wordDifficultySlider",
+  values: ["easy", "medium", "hard"],
+  range: false,
+  tooltip: true,
+  scale: false,
+  labels: false,
+  width: 400,
+});
+
+var phraseLengthSlider = new rSlider({
+  target: "#phraseLengthSlider",
+  values: ["short", "medium", "long"],
+  range: true,
   tooltip: true,
   scale: false,
   labels: false,

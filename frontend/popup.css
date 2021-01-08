@@ -243,3 +243,8 @@ body {
 .show {
   display: block;
 }
+
+/* Advanced Options Styles */
+#advancedOptions {
+  display: block;
+}
