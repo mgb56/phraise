@@ -5,30 +5,16 @@
 //   changeColor.setAttribute("value", data.color);
 // });
 
-// changeColor.onclick = function(element) {
-//   let color = element.target.value;
-//   chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-//     chrome.tabs.executeScript(tabs[0].id, {
-//       code: 'document.body.style.backgroundColor = "' + color + '";'
-//     });
-//   });
-// };
-
 var linkParis = document.getElementById("link-Paris");
 openCity(linkParis, "Paris"); // open city Paris so it is pre-selected
 
-linkParis.onclick = function(element) {
+linkParis.onclick = function (element) {
   openCity(linkParis, "Paris");
 };
 
 var linkLondon = document.getElementById("link-London");
-linkLondon.onclick = function(element) {
+linkLondon.onclick = function (element) {
   openCity(linkLondon, "London");
-};
-
-var linkTokyo = document.getElementById("link-Tokyo");
-linkTokyo.onclick = function(element) {
-  openCity(linkTokyo, "Tokyo");
 };
 
 function openCity(evt, cityName) {
@@ -51,3 +37,72 @@ function openCity(evt, cityName) {
   document.getElementById(cityName).style.display = "block";
   evt.className += " active";
 }
+
+function prevAll(element) {
+  var result = [];
+  while ((element = element.previousElementSibling)) {
+    result.push(element);
+  }
+  return result;
+}
+
+var sheet = document.createElement("style"),
+  rangeInput = document.querySelector(".range input"),
+  prefs = ["webkit-slider-runnable-track", "moz-range-track", "ms-track"];
+
+document.body.appendChild(sheet);
+
+var getTrackStyle = function (el) {
+  var curVal = el.value,
+    val = ((curVal - 1) * 100) / 6,
+    style = "";
+
+  // Set active label
+  var rangeLabels = document.querySelector(".range-labels li");
+  // rangeLabels.classList.remove("active selected");
+  rangeLabels.classList.remove("active");
+  rangeLabels.classList.remove("selected");
+
+  var fullRangeLabels = document.querySelector(".range-labels");
+  var curLabel = fullRangeLabels.querySelector("li:nth-child(" + curVal + ")");
+
+  curLabel.classList.add("active");
+  curLabel.classList.add("selected");
+  var children = prevAll(curLabel);
+  for (var i = 0; i < children.length; i++) {
+    children[i].classList.add("selected");
+  }
+  // curLabel.prevAll().addClass("selected");
+
+  // Change background gradient
+  for (var i = 0; i < prefs.length; i++) {
+    style +=
+      ".range {background: linear-gradient(to right, #37adbf 0%, #37adbf " +
+      val +
+      "%, #fff " +
+      val +
+      "%, #fff 100%)}";
+    style +=
+      ".range input::-" +
+      prefs[i] +
+      "{background: linear-gradient(to right, #37adbf 0%, #37adbf " +
+      val +
+      "%, #b2b2b2 " +
+      val +
+      "%, #b2b2b2 100%)}";
+  }
+
+  return style;
+};
+
+rangeInput.addEventListener("input", function () {
+  sheet.textContent = getTrackStyle(this);
+});
+
+// Change input value on label click
+var rangeLabels = document.querySelector(".range-labels li");
+rangeLabels.onclick = function (element) {
+  var index = element.index();
+
+  rangeInput.val(index + 1).trigger("input");
+};

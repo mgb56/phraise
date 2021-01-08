@@ -1,22 +1,12 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <!-- <style>
-      /* button {
-        height: 30px;
-        width: 30px;
-        outline: none;
-      } */
-    </style> -->
     <link rel="stylesheet" href="popup.css" />
   </head>
   <body>
     <div class="tab">
-      <button class="tablinks" id="link-London">
-        London
-      </button>
+      <button class="tablinks" id="link-London">London</button>
       <button class="tablinks" id="link-Paris">Paris</button>
-      <button class="tablinks" id="link-Tokyo">Tokyo</button>
     </div>
 
     <!-- Tab content -->
@@ -28,13 +18,19 @@
     <div id="Paris" class="tabcontent">
       <h3>Paris</h3>
       <p>Paris is the capital of France.</p>
+      <div class="range">
+        <input type="range" min="1" max="7" steps="1" value="1" />
+      </div>
+      <ul class="range-labels">
+        <li class="active selected">Today</li>
+        <li>2 days</li>
+        <li>3 days</li>
+        <li>4 days</li>
+        <li>5 days</li>
+        <li>6 days</li>
+        <li>7 days</li>
+      </ul>
     </div>
-
-    <div id="Tokyo" class="tabcontent">
-      <h3>Tokyo</h3>
-      <p>Tokyo is the capital of Japan.</p>
-    </div>
-    <!-- <button id="changeColor"></button> -->
     <script src="popup.js"></script>
   </body>
 </html>
