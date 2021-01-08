@@ -2,8 +2,6 @@
 <html>
   <head>
     <link rel="stylesheet" href="popup.css" />
-    <!-- <link rel="stylesheet" href="css/rSlider.min.css" />
-    <script src="js/rSlider.min.js"></script> -->
   </head>
   <body>
     <div class="tab">
@@ -19,18 +17,24 @@
 
     <div id="Paris" class="tabcontent">
       <input type="text" id="sampleSlider" class="samplingRateSlider" />
-      <!-- <div class="range">
-        <input type="range" min="1" max="7" steps="1" value="1" />
+      <div class="dropdown">
+        <button class="dropbtn" id="languageDropdown">Language</button>
+        <div id="dropdownSelection" class="dropdown-content">
+          <input
+            type="text"
+            placeholder="Search.."
+            id="myInput"
+            onkeyup="filterFunction()"
+          />
+          <a href="#about">About</a>
+          <a href="#base">Base</a>
+          <a href="#blog">Blog</a>
+          <a href="#contact">Contact</a>
+          <a href="#custom">Custom</a>
+          <a href="#support">Support</a>
+          <a href="#tools">Tools</a>
+        </div>
       </div>
-      <ul class="range-labels">
-        <li class="active selected">Today</li>
-        <li>2 days</li>
-        <li>3 days</li>
-        <li>4 days</li>
-        <li>5 days</li>
-        <li>6 days</li>
-        <li>7 days</li>
-      </ul> -->
     </div>
     <script src="popup.js"></script>
   </body>

@@ -5,6 +5,7 @@
 //   changeColor.setAttribute("value", data.color);
 // });
 
+// Tabs and tab content
 var linkParis = document.getElementById("link-Paris");
 openCity(linkParis, "Paris"); // open city Paris so it is pre-selected
 
@@ -38,88 +39,13 @@ function openCity(evt, cityName) {
   evt.className += " active";
 }
 
-// function prevAll(element) {
-//   var result = [];
-//   while ((element = element.previousElementSibling)) {
-//     result.push(element);
-//   }
-//   return result;
-// }
+// Dropdown
+var languageDropdown = document.getElementById("languageDropdown");
+languageDropdown.onclick = () => {
+  document.getElementById("dropdownSelections").classList.toggle("show");
+};
 
-// var sheet = document.createElement("style"),
-//   rangeInput = document.querySelector(".range input"),
-//   prefs = ["webkit-slider-runnable-track", "moz-range-track", "ms-track"];
-
-// document.body.appendChild(sheet);
-
-// var getTrackStyle = function (el) {
-//   var curVal = el.value,
-//     val = ((curVal - 1) * 100) / 6,
-//     style = "";
-
-//   // Set active label
-//   var rangeLabels = document.querySelectorAll(".range-labels li");
-//   for (var i = 0; i < rangeLabels.length; i++) {
-//     rangeLabels[i].classList.remove("active");
-//     rangeLabels[i].classList.remove("selected");
-//   }
-
-//   var fullRangeLabels = document.querySelector(".range-labels");
-//   var curLabel = fullRangeLabels.querySelector("li:nth-child(" + curVal + ")");
-
-//   curLabel.classList.add("active");
-//   curLabel.classList.add("selected");
-
-//   // var children = prevAll(curLabel);
-//   // for (var i = 0; i < children.length; i++) {
-//   //   children[i].classList.add("selected");
-//   // }
-
-//   // curLabel.prevAll().addClass("selected");
-
-//   // Change background gradient
-//   for (var i = 0; i < prefs.length; i++) {
-//     style +=
-//       ".range {background: linear-gradient(to right, #37adbf 0%, #37adbf " +
-//       val +
-//       "%, #fff " +
-//       val +
-//       "%, #fff 100%)}";
-//     style +=
-//       ".range input::-" +
-//       prefs[i] +
-//       "{background: linear-gradient(to right, #37adbf 0%, #37adbf " +
-//       val +
-//       "%, #b2b2b2 " +
-//       val +
-//       "%, #b2b2b2 100%)}";
-//   }
-
-//   return style;
-// };
-
-// rangeInput.addEventListener("input", function () {
-//   sheet.textContent = getTrackStyle(this);
-// });
-
-// // Change input value on label click
-// var rangeLabels = document.querySelector(".range-labels li");
-// rangeLabels.onclick = function (element) {
-//   var index = element.index();
-
-//   rangeInput.val(index + 1).trigger("input");
-// };
-
-// var mySlider = new rSlider({
-//   target: "#sampleSlider",
-//   values: [2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015],
-//   range: true,
-//   tooltip: true,
-//   scale: true,
-//   labels: true,
-//   set: [2010, 2013]
-// });
-
+// Slider
 (function () {
   "use strict";
 
@@ -143,7 +69,7 @@ function openCity(evt, cityName) {
 
     this.values = {
       start: null,
-      end: null
+      end: null,
     };
     this.conf = {
       target: null,
@@ -156,7 +82,7 @@ function openCity(evt, cityName) {
       tooltip: true,
       step: null,
       disabled: false,
-      onChange: null
+      onChange: null,
     };
 
     this.cls = {
@@ -166,7 +92,7 @@ function openCity(evt, cityName) {
       pointer: "rs-pointer",
       scale: "rs-scale",
       noscale: "rs-noscale",
-      tip: "rs-tooltip"
+      tip: "rs-tooltip",
     };
 
     for (var i in this.conf) {
@@ -488,5 +414,5 @@ var mySlider = new rSlider({
   tooltip: true,
   scale: false,
   labels: false,
-  width: 400
+  width: 400,
 });
