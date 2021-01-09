@@ -39,6 +39,7 @@ function openCity(evt, cityName) {
   evt.className += " active";
 }
 
+// Dropdowns
 var languages = {
   Afrikaans: "af",
   Albanian: "sq",
@@ -151,7 +152,6 @@ var languages = {
   Zulu: "zu",
 };
 
-// Dropdown
 var languageDropdown = document.getElementById("languageDropdown");
 languageDropdown.onclick = () => {
   document.getElementById("languageSelection").classList.toggle("show");
@@ -182,26 +182,105 @@ for (var lang in languages) {
   languageSelection.appendChild(entry);
 }
 
-// Advanced Options
-var advancedOptions = document.getElementById("advancedOptions");
-advancedOptions.onclick = () => {
-  var samplingRateContainer = document.querySelector(".rs-container");
-  var wordDifficultyContainer =
-    samplingRateContainer.nextElementSibling.nextElementSibling;
-  var phraseLengthContainer =
-    wordDifficultyContainer.nextElementSibling.nextElementSibling;
+var blockedSites = ["wikipedia.org", "google.com", "coursera.org"];
 
-  if (wordDifficultyContainer.style.display === "none") {
-    wordDifficultyContainer.style.display = "block";
-  } else {
-    wordDifficultyContainer.style.display = "none";
-  }
-  if (phraseLengthContainer.style.display === "none") {
-    phraseLengthContainer.style.display = "block";
-  } else {
-    phraseLengthContainer.style.display = "none";
+var blocklistDropdown = document.getElementById("blocklistDropdown");
+blocklistDropdown.onclick = () => {
+  document.getElementById("blockSelection").classList.toggle("show");
+};
+
+var blockSelection = document.getElementById("blockSelection");
+for (var site of blockedSites) {
+  var entry = document.createElement("a");
+  entry.innerHTML = site;
+  entry.href = "#" + site;
+  blockSelection.appendChild(entry);
+}
+
+var blockList = document.getElementById("blockList");
+blockList.onkeyup = () => {
+  var input, filter, a, i;
+  input = document.getElementById("blockList");
+  filter = input.value.toUpperCase();
+  div = document.getElementById("blockSelection");
+  a = div.getElementsByTagName("a");
+  for (i = 0; i < a.length; i++) {
+    txtValue = a[i].textContent || a[i].innerText;
+    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+      a[i].style.display = "";
+    } else {
+      a[i].style.display = "none";
+    }
   }
 };
+
+// Advanced Options
+var advancedOptions = document.getElementById("advancedOptions");
+var firstTime = true;
+var clickAdvancedOptions = () => {
+  if (firstTime) {
+    // All of this bs is to make the advanced options slides hidden by default
+    var wordDifficultyInput = document.createElement("input");
+    wordDifficultyInput.type = "text";
+    wordDifficultyInput.id = "wordDifficultySlider";
+    var phraseLengthInput = document.createElement("input");
+    phraseLengthInput.type = "text";
+    phraseLengthInput.id = "phraseLengthSlider";
+
+    var samplingRateInput = document.getElementById("samplingRateSlider");
+    samplingRateInput.parentNode.insertBefore(
+      wordDifficultyInput,
+      samplingRateInput.nextElementSibling.nextElementSibling
+    );
+    samplingRateInput.parentNode.insertBefore(
+      phraseLengthInput,
+      wordDifficultyInput.nextElementSibling
+    );
+
+    var wordDifficultySlider = new rSlider({
+      target: "#wordDifficultySlider",
+      values: ["easy", "medium", "hard"],
+      range: false,
+      tooltip: true,
+      scale: false,
+      labels: false,
+      width: 400,
+    });
+
+    var phraseLengthSlider = new rSlider({
+      target: "#phraseLengthSlider",
+      values: ["short", "medium", "long"],
+      range: true,
+      tooltip: true,
+      scale: false,
+      labels: false,
+      width: 400,
+    });
+    firstTime = false;
+  } else {
+    var samplingRateContainer = document.querySelector(".rs-container");
+    var wordDifficultyContainer =
+      samplingRateContainer.nextElementSibling.nextElementSibling;
+    var phraseLengthContainer =
+      wordDifficultyContainer.nextElementSibling.nextElementSibling;
+
+    chrome.extension.getBackgroundPage().console.log(samplingRateContainer);
+    chrome.extension.getBackgroundPage().console.log(wordDifficultyContainer);
+    chrome.extension.getBackgroundPage().console.log(phraseLengthContainer);
+
+    if (wordDifficultyContainer.style.display === "none") {
+      wordDifficultyContainer.style.display = "block";
+    } else {
+      wordDifficultyContainer.style.display = "none";
+    }
+    if (phraseLengthContainer.style.display === "none") {
+      phraseLengthContainer.style.display = "block";
+    } else {
+      phraseLengthContainer.style.display = "none";
+    }
+  }
+};
+advancedOptions.onclick = clickAdvancedOptions;
 
 // Slider
 (function () {
@@ -569,26 +648,6 @@ var samplingRateSlider = new rSlider({
   target: "#samplingRateSlider",
   values: ["low", "medium", "high"],
   range: false,
-  tooltip: true,
-  scale: false,
-  labels: false,
-  width: 400,
-});
-
-var wordDifficultySlider = new rSlider({
-  target: "#wordDifficultySlider",
-  values: ["easy", "medium", "hard"],
-  range: false,
-  tooltip: true,
-  scale: false,
-  labels: false,
-  width: 400,
-});
-
-var phraseLengthSlider = new rSlider({
-  target: "#phraseLengthSlider",
-  values: ["short", "medium", "long"],
-  range: true,
   tooltip: true,
   scale: false,
   labels: false,

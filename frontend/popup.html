@@ -5,20 +5,13 @@
   </head>
   <body>
     <div class="tab">
-      <button class="tablinks" id="link-London">London</button>
-      <button class="tablinks" id="link-Paris">Paris</button>
+      <button class="tablinks" id="link-Paris">Settings</button>
+      <button class="tablinks" id="link-London">Block</button>
     </div>
 
     <!-- Tab content -->
-    <div id="London" class="tabcontent">
-      <h3>London</h3>
-      <p>London is the capital city of England.</p>
-    </div>
-
     <div id="Paris" class="tabcontent">
       <input type="text" id="samplingRateSlider" />
-      <input type="text" id="wordDifficultySlider" />
-      <input type="text" id="phraseLengthSlider" />
       <div class="dropdown">
         <button class="dropbtn" id="languageDropdown">Language</button>
         <div id="languageSelection" class="dropdown-content">
@@ -26,6 +19,20 @@
         </div>
       </div>
       <button id="advancedOptions">Advanced Options</button>
+    </div>
+
+    <div id="London" class="tabcontent">
+      <button id="blockCurrent">Block Current Site</button>
+      <div class="dropdown">
+        <button class="dropbtn" id="blocklistDropdown">Unblock</button>
+        <div id="blockSelection" class="dropdown-content">
+          <input
+            type="text"
+            placeholder="Select sites to unblock"
+            id="blockList"
+          />
+        </div>
+      </div>
     </div>
     <script src="popup.js"></script>
   </body>
