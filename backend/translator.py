@@ -2,10 +2,11 @@ from google.cloud import translate
 from googletrans import Translator
 
 from parser import PartialParser
+from TranslatorApi import TranslatorApi, TranslationType
 
 
 class PartialTranslator:
-    def __init__(self, sentences, is_mock=False, try_free=True):
+    def __init__(self, sentences, is_mock=False, try_free=True, offline_languages={}):
         self.sentences = sentences
         self.is_mock = is_mock
         if self.is_mock:
@@ -15,25 +16,29 @@ class PartialTranslator:
         self.parsed_texts = self.parser.partial_parse()
         
         self.try_free = try_free
-        if self.try_free:
-            # self.free_translator = Translator(service_urls=[
-            #     'translate.google.com',
-            #     'translate.google.co.kr',
-            # ])
+        translation_type = TranslationType.GOOGLE_FREE
+        self.translator = TranslatorApi(offline_languages=offline_languages)
 
-            self.free_translator = Translator(service_urls=['translate.googleapis.com','translate.google.com','translate.google.co.kr'])
-            self.free_translator.raise_Exception = True
-        else:
-            self.translate_client = translate.TranslationServiceClient()
+        # if self.try_free:
+        #     # self.free_translator = Translator(service_urls=[
+        #     #     'translate.google.com',
+        #     #     'translate.google.co.kr',
+        #     # ])
+
+        #     self.free_translator = Translator(service_urls=['translate.googleapis.com','translate.google.com','translate.google.co.kr'])
+        #     self.free_translator.raise_Exception = True
+        # else:
+        #     self.translate_client = translate.TranslationServiceClient()
         
     
-    def translate(self, target_lang, src_lang, left_trim=None, right_trim=None):
+    def translate(self, target_lang, src_lang, translation_type, left_trim=None, right_trim=None):
         if self.is_mock:
             return self.translate_mock()
         else:
-            return self.translate_real(target_lang, src_lang, left_trim=left_trim, right_trim=right_trim)
+            print('got here')
+            return self.translate_real(target_lang, src_lang, translation_type, left_trim=left_trim, right_trim=right_trim)
     
-    def translate_real(self, target_lang, src_lang, is_mock=False, left_trim=None, right_trim=None):
+    def translate_real(self, target_lang, src_lang, translation_type, is_mock=False, left_trim=None, right_trim=None):
         if is_mock:
             return self.translate_mock()
         
@@ -50,24 +55,28 @@ class PartialTranslator:
         spaces = [self.count_leading_and_trailing_whitespace(parse[1]) for parse in self.parsed_texts]
         need_translation_strs = [parse[1].strip() for parse in self.parsed_texts]
 
+        if translation_type == TranslationType.OFFLINE:
+            return self.parse_offline_translation(spaces, need_translation_strs, new_left_context_arr, new_right_context_arr, src_lang, target_lang)
+
         # if left trim and right trim are set, we won't translate all the context
         full_strs = [new_left_context_arr[i] + '<p>' + need_translation_strs[i] + ' </p>' + new_right_context_arr[i]  for i in range(len(self.parsed_texts))]
 
-        if self.try_free:
-            result = self.free_translator.translate(full_strs, dest=target_lang, src=src_lang)
-            text_result = [translation.text for translation in result]
-            # text_result = []
-            # for i in range(len(full_strs)):
-            #     result = self.free_translator.translate(full_strs[i], dest=target_lang, src=src_lang)
-            #     text_result.append(result.text)
-        else:
-            result = self.translate_client.translate_text(contents=full_strs, 
-                                                      target_language_code=target_lang, 
-                                                      source_language_code=src_lang, 
-                                                      mime_type='text/html',
-                                                      parent='projects/disco-beach-300422'
-                                                      )
-            text_result = [translation.translated_text for translation in result.translations]
+        text_result = self.translator.translate(full_strs, TranslationType.OFFLINE, src_lang, target_lang)
+        # if self.try_free:
+        #     result = self.free_translator.translate(full_strs, dest=target_lang, src=src_lang)
+        #     text_result = [translation.text for translation in result]
+        #     # text_result = []
+        #     # for i in range(len(full_strs)):
+        #     #     result = self.free_translator.translate(full_strs[i], dest=target_lang, src=src_lang)
+        #     #     text_result.append(result.text)
+        # else:
+        #     result = self.translate_client.translate_text(contents=full_strs, 
+        #                                               target_language_code=target_lang, 
+        #                                               source_language_code=src_lang, 
+        #                                               mime_type='text/html',
+        #                                               parent='projects/disco-beach-300422'
+        #                                               )
+        #     text_result = [translation.translated_text for translation in result.translations]
 
         translations = []
         for i, translation in enumerate(text_result):
@@ -149,7 +158,36 @@ class PartialTranslator:
     
     def convert_token_arr_to_str(self, arr):
         return ''.join([token.text_with_ws for token in arr])
-            
+    
+
+    def parse_offline_translation(self, spaces, need_translation_strs, new_left_context_arr, new_right_context_arr, src_lang, target_lang):
+        delimiter = " \"\"\" "
+        full_strs = [new_left_context_arr[i] + delimiter + need_translation_strs[i] + delimiter + new_right_context_arr[i]  for i in range(len(self.parsed_texts))]
+        print(full_strs)
+        text_result = self.translator.translate(full_strs, TranslationType.OFFLINE, src_lang, target_lang)
+        print(text_result)
+        translations = []
+        for i, translation in enumerate(text_result):
+            num_left, num_right = 3, 3
+            first_html_tag_pos = translation.find('"""')
+            if first_html_tag_pos == -1:
+                first_html_tag_pos = translation.find('""')
+                num_left = 2
+            last_html_tag_pos = translation.rfind('"""')
+            if last_html_tag_pos == -1:
+                last_html_tag_pos = translation.rfind('""')
+                num_right = 2
+            translated_bit = translation[first_html_tag_pos + num_left + 1: last_html_tag_pos -3 + num_right]
+            translated_bit = ' ' * spaces[i][0] + translated_bit + ' ' * spaces[i][1]
+            #full_translation = self.parsed_texts[i][0] + '<p>' + translated_bit + '</p>' + self.parsed_texts[i][2]
+            #translations.append(full_translation)
+
+            left_context = self.convert_token_arr_to_str(self.parsed_texts[i][0])
+            right_context = self.convert_token_arr_to_str(self.parsed_texts[i][2])
+
+            arr = [left_context, translated_bit, right_context, self.parsed_texts[i][1]] 
+            translations.append(arr)
+        return translations
 
 #s = ['the big red dog ran up the tree']
 #translator = PartialTranslator(s)

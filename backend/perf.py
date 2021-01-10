@@ -1,5 +1,27 @@
-from translator import PartialTranslator
+from translator import PartialTranslator, TranslationType
 import time
+import sys
+import os
+
+from argostranslate import package, translate
+
+if sys.platform != 'darwin':
+    # check if dir already exists
+    # if not os.path.isdir('/root/.argos-translate'):
+    #     print('reexcuting the import of argos')
+    for filename in os.listdir('./models'):
+        try:
+            package.install_from_path('./models/' + filename)
+        except:
+            pass # I guess the cache already installed it?
+
+    installed_languages = translate.load_installed_languages()
+    offline_languages = {}
+
+    for lang in installed_languages:
+        offline_languages[str(lang)] = lang
+else:
+    offline_languages = {}
 
 
 # sentences = [
@@ -21,9 +43,9 @@ import time
 sentences = ['the big red dog ran up the tree']
 
 curr_time = time.time()
-translator = PartialTranslator(sentences, is_mock=False)
+translator = PartialTranslator(sentences, is_mock=False, offline_languages=offline_languages)
 next_time = time.time()
-translated = translator.translate(src_lang='en', target_lang='es', left_trim=1, right_trim=1)
+translated = translator.translate('en', 'es', TranslationType.OFFLINE)
 final_time = time.time()
 
 #print(next_time - curr_time)

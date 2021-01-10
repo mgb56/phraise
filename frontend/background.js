@@ -8,11 +8,11 @@ chrome.runtime.onInstalled.addListener(function () {
       {
         conditions: [
           new chrome.declarativeContent.PageStateMatcher({
-            pageUrl: { hostEquals: "developer.chrome.com" },
-          }),
+            pageUrl: { hostEquals: "developer.chrome.com" }
+          })
         ],
-        actions: [new chrome.declarativeContent.ShowPageAction()],
-      },
+        actions: [new chrome.declarativeContent.ShowPageAction()]
+      }
     ]);
   });
 });
@@ -20,8 +20,8 @@ chrome.runtime.onInstalled.addListener(function () {
 // added by me
 let active_tab_id = 0;
 
-chrome.tabs.onActivated.addListener((tab) => {
-  chrome.tabs.get(tab.tabId, (current_tab_info) => {
+chrome.tabs.onActivated.addListener(tab => {
+  chrome.tabs.get(tab.tabId, current_tab_info => {
     active_tab_id = tab.tabId;
 
     let url = current_tab_info.url;
@@ -42,14 +42,14 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   fetch("http://0.0.0.0:33507/", {
     method: "POST",
     body: JSON.stringify(request.array),
-    headers: { "Content-type": "application/json; charset=UTF-8" },
+    headers: { "Content-type": "application/json; charset=UTF-8" }
   })
     // .then((response) => console.log(response))
-    .then((response) => response.json())
-    .then((jsonResponse) => {
+    .then(response => response.json())
+    .then(jsonResponse => {
       console.log(jsonResponse);
       sendResponse({ translatedText: jsonResponse });
     })
-    .catch((err) => console.log(err));
+    .catch(err => console.log(err));
   return true; // to prevent message port from being closed
 });
