@@ -149,7 +149,7 @@ var languages = {
   Xhosa: "xh",
   Yiddish: "yi",
   Yoruba: "yo",
-  Zulu: "zu"
+  Zulu: "zu",
 };
 
 var languageDropdown = document.getElementById("languageDropdown");
@@ -188,7 +188,7 @@ var sites = [
   "https://www.cloud.console.google.com",
   "https://www.facebook.com",
   "https://www.kit.snap.com",
-  "https://www.apple.com"
+  "https://www.apple.com",
 ];
 
 sites.sort();
@@ -201,41 +201,11 @@ for (site of sites) {
   blockMultipleSites.appendChild(optionElement);
 }
 
-// var blockedSites = ["wikipedia.org", "google.com", "coursera.org"];
-
-// var blocklistDropdown = document.getElementById("blocklistDropdown");
-// blocklistDropdown.onclick = () => {
-//   document.getElementById("blockSelection").classList.toggle("show");
-// };
-
-// var blockSelection = document.getElementById("blockSelection");
-// for (var site of blockedSites) {
-//   var entry = document.createElement("a");
-//   entry.innerHTML = site;
-//   entry.href = "#" + site;
-//   blockSelection.appendChild(entry);
-// }
-
-// var blockList = document.getElementById("blockList");
-// blockList.onkeyup = () => {
-//   var input, filter, a, i;
-//   input = document.getElementById("blockList");
-//   filter = input.value.toUpperCase();
-//   div = document.getElementById("blockSelection");
-//   a = div.getElementsByTagName("a");
-//   for (i = 0; i < a.length; i++) {
-//     txtValue = a[i].textContent || a[i].innerText;
-//     if (txtValue.toUpperCase().indexOf(filter) > -1) {
-//       a[i].style.display = "";
-//     } else {
-//       a[i].style.display = "none";
-//     }
-//   }
-// };
-
 // Advanced Options
 var advancedOptions = document.getElementById("advancedOptions");
 var firstTime = true;
+var wordDifficultySlider;
+var phraseLengthSlider;
 var clickAdvancedOptions = () => {
   if (firstTime) {
     // All of this bs is to make the advanced options slides hidden by default
@@ -256,25 +226,62 @@ var clickAdvancedOptions = () => {
       wordDifficultyInput.nextElementSibling
     );
 
-    var wordDifficultySlider = new rSlider({
-      target: "#wordDifficultySlider",
-      values: ["easy", "medium", "hard"],
-      range: false,
-      tooltip: true,
-      scale: false,
-      labels: false,
-      width: 400
+    chrome.storage.sync.get(["wordDifficultyVal"], function (result) {
+      var wordDifficultyInitVal;
+      if (
+        typeof result.wordDifficultyVal === "undefined" ||
+        result.wordDifficultyVal == null
+      ) {
+        wordDifficultyInitVal = "easy";
+      } else {
+        wordDifficultyInitVal = result.wordDifficultyVal;
+      }
+      wordDifficultySlider = new rSlider({
+        target: "#wordDifficultySlider",
+        values: ["easy", "medium", "hard"],
+        range: false,
+        tooltip: true,
+        scale: false,
+        labels: false,
+        width: 400,
+        set: [wordDifficultyInitVal],
+      });
     });
 
-    var phraseLengthSlider = new rSlider({
-      target: "#phraseLengthSlider",
-      values: ["short", "medium", "long"],
-      range: true,
-      tooltip: true,
-      scale: false,
-      labels: false,
-      width: 400
-    });
+    chrome.storage.sync.get(
+      ["phraseLengthVal1", "phraseLengthVal2"],
+      function (result) {
+        var phraseLengthInitVal1;
+        var phraseLengthInitVal2;
+        if (
+          typeof result.phraseLengthVal1 === "undefined" ||
+          result.phraseLengthVal1 == null
+        ) {
+          phraseLengthInitVal1 = "short";
+        } else {
+          phraseLengthInitVal1 = result.phraseLengthVal1;
+        }
+        if (
+          typeof result.phraseLengthVal2 === "undefined" ||
+          result.phraseLengthVal2 == null
+        ) {
+          phraseLengthInitVal2 = "long";
+        } else {
+          phraseLengthInitVal2 = result.phraseLengthVal2;
+        }
+
+        phraseLengthSlider = new rSlider({
+          target: "#phraseLengthSlider",
+          values: ["short", "medium", "long"],
+          range: true,
+          tooltip: true,
+          scale: false,
+          labels: false,
+          width: 400,
+          set: [phraseLengthInitVal1, phraseLengthInitVal2],
+        });
+      }
+    );
     firstTime = false;
   } else {
     var samplingRateContainer = document.querySelector(".rs-container");
@@ -282,10 +289,6 @@ var clickAdvancedOptions = () => {
       samplingRateContainer.nextElementSibling.nextElementSibling;
     var phraseLengthContainer =
       wordDifficultyContainer.nextElementSibling.nextElementSibling;
-
-    chrome.extension.getBackgroundPage().console.log(samplingRateContainer);
-    chrome.extension.getBackgroundPage().console.log(wordDifficultyContainer);
-    chrome.extension.getBackgroundPage().console.log(phraseLengthContainer);
 
     if (wordDifficultyContainer.style.display === "none") {
       wordDifficultyContainer.style.display = "block";
@@ -325,7 +328,7 @@ advancedOptions.onclick = clickAdvancedOptions;
 
     this.values = {
       start: null,
-      end: null
+      end: null,
     };
     this.conf = {
       target: null,
@@ -338,7 +341,7 @@ advancedOptions.onclick = clickAdvancedOptions;
       tooltip: true,
       step: null,
       disabled: false,
-      onChange: null
+      onChange: null,
     };
 
     this.cls = {
@@ -348,7 +351,7 @@ advancedOptions.onclick = clickAdvancedOptions;
       pointer: "rs-pointer",
       scale: "rs-scale",
       noscale: "rs-noscale",
-      tip: "rs-tooltip"
+      tip: "rs-tooltip",
     };
 
     for (var i in this.conf) {
@@ -663,15 +666,89 @@ advancedOptions.onclick = clickAdvancedOptions;
   window.rSlider = RS;
 })();
 
-var samplingRateSlider = new rSlider({
-  target: "#samplingRateSlider",
-  values: ["low", "medium", "high"],
-  range: false,
-  tooltip: true,
-  scale: false,
-  labels: false,
-  width: 400
+var samplingRateSlider;
+chrome.storage.sync.get(["samplingRateVal"], function (result) {
+  var samplingRateInitVal;
+  if (
+    typeof result.samplingRateVal === "undefined" ||
+    result.samplingRateVal == null
+  ) {
+    samplingRateInitVal = "low";
+  } else {
+    samplingRateInitVal = result.samplingRateVal;
+  }
+  samplingRateSlider = new rSlider({
+    target: "#samplingRateSlider",
+    values: ["low", "medium", "high"],
+    range: false,
+    tooltip: true,
+    scale: false,
+    labels: false,
+    width: 400,
+    set: [samplingRateInitVal],
+  });
 });
+
+// Save Settings
+var saveSettings = document.getElementById("saveSettings");
+saveSettings.onclick = () => {
+  var samplingRateVal = samplingRateSlider.getValue();
+  // advanced options was not clicked
+  if (
+    typeof wordDifficultySlider === "undefined" ||
+    wordDifficultySlider == null
+  ) {
+    chrome.extension
+      .getBackgroundPage()
+      .console.log(
+        "chrome.storage.sync in saveSettings onclick is " + chrome.storage.sync
+      );
+    chrome.storage.sync.set({ samplingRateVal: samplingRateVal }, function () {
+      chrome.extension
+        .getBackgroundPage()
+        .console.log("samplingRateVal is set to " + samplingRateVal);
+    });
+    return;
+  }
+
+  var wordDifficultyVal = wordDifficultySlider.getValue();
+  var phraseLengthVals = phraseLengthSlider.getValue();
+  var phraseLengthVal1 = phraseLengthVals.substring(
+    0,
+    phraseLengthVals.search(",")
+  );
+  var phraseLengthVal2 = phraseLengthVals.substring(
+    phraseLengthVals.search(",") + 1,
+    phraseLengthVals.length
+  );
+
+  // set settings values for persistence
+  chrome.storage.sync.set({ samplingRateVal: samplingRateVal }, function () {
+    chrome.extension
+      .getBackgroundPage()
+      .console.log("samplingRateVal is set to " + samplingRateVal);
+  });
+  chrome.storage.sync.set(
+    { wordDifficultyVal: wordDifficultyVal },
+    function () {
+      chrome.extension
+        .getBackgroundPage()
+        .console.log("wordDifficultyVal is set to " + wordDifficultyVal);
+    }
+  );
+  chrome.storage.sync.set({ phraseLengthVal1: phraseLengthVal1 }, function () {
+    chrome.extension
+      .getBackgroundPage()
+      .console.log("phraseLengthVal1 is set to " + phraseLengthVal1);
+  });
+  chrome.storage.sync.set({ phraseLengthVal2: phraseLengthVal2 }, function () {
+    chrome.extension
+      .getBackgroundPage()
+      .console.log("phraseLengthVal2 is set to " + phraseLengthVal2);
+  });
+};
+
+// MULTI-SELECTION DROPDOWN
 
 // Initialize function, create initial tokens with itens that are already selected by the user
 function init(element) {
@@ -924,17 +1001,17 @@ function autocomplete(query, options) {
 function getOptions(select) {
   // Select all the options available
   const all_options = Array.from(select.querySelectorAll("option")).map(
-    el => el.value
+    (el) => el.value
   );
 
   // Get the options that are selected from the user
   const options_selected = Array.from(
     select.querySelectorAll("option:checked")
-  ).map(el => el.value);
+  ).map((el) => el.value);
 
   // Create an autocomplete options array with the options that are not selected by the user
   const autocomplete_options = [];
-  all_options.forEach(option => {
+  all_options.forEach((option) => {
     if (!options_selected.includes(option)) {
       autocomplete_options.push(option);
     }
@@ -944,7 +1021,7 @@ function getOptions(select) {
 
   return {
     options_selected,
-    autocomplete_options
+    autocomplete_options,
   };
 }
 
@@ -1011,7 +1088,7 @@ function addOption(target, val, text) {
 document.addEventListener("DOMContentLoaded", () => {
   // get select that has the options available
   const select = document.querySelectorAll("[data-multi-select-plugin]");
-  select.forEach(select => {
+  select.forEach((select) => {
     init(select);
   });
 
