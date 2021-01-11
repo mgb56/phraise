@@ -22,16 +22,31 @@
     </div>
 
     <div id="London" class="tabcontent">
-      <button id="blockCurrent">Block Current Site</button>
-      <div class="container">
-        <select multiple data-multi-select-plugin id="blockCustomSitesMultiple">
-          <!-- <option value="Volvo" selected>Volvo</option>
-          <option value="Mercedes" selected>Mercedes</option>
-          <option value="Hilux">Hilux</option>
-          <option value="Corsa">Corsa</option>
-          <option value="BMW">BMW</option>
-          <option value="Ferrari">Ferrari</option> -->
-        </select>
+      <div class="allBlockFunctionality">
+        <div class="checkboxAndButtonContainer">
+          <label class="checkboxContainer">
+            <input type="checkbox" checked="checked" />
+            <span class="checkmark"></span>
+          </label>
+          <button id="blockCurrent">Block Current Site</button>
+        </div>
+        <div class="unblockContainer">
+          <div class="container">
+            <select
+              multiple
+              data-multi-select-plugin
+              id="blockCustomSitesMultiple"
+            >
+              <!-- <option value="Volvo" selected>Volvo</option>
+                    <option value="Mercedes" selected>Mercedes</option>
+                    <option value="Hilux">Hilux</option>
+                    <option value="Corsa">Corsa</option>
+                    <option value="BMW">BMW</option>
+                    <option value="Ferrari">Ferrari</option> -->
+            </select>
+          </div>
+          <button id="unblockCurrent">Unblock selected sites</button>
+        </div>
       </div>
     </div>
     <script src="popup.js"></script>

@@ -3,11 +3,11 @@
   "version": "1.0",
   "description": "Build an Extension!",
   "permissions": [
+    "storage",
     "http://*/",
     "https://*/",
     "activeTab",
-    "declarativeContent",
-    "storage"
+    "declarativeContent"
   ],
   "background": {
     "scripts": ["background.js"],

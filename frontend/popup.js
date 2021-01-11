@@ -182,24 +182,25 @@ for (var lang in languages) {
   languageSelection.appendChild(entry);
 }
 
-var sites = [
-  "https://www.news.google.com",
-  "https://www.aws.amazon.com",
-  "https://www.cloud.console.google.com",
-  "https://www.facebook.com",
-  "https://www.kit.snap.com",
-  "https://www.apple.com"
-];
-
-sites.sort();
-
 var blockMultipleSites = document.getElementById("blockCustomSitesMultiple");
 
-for (site of sites) {
-  var optionElement = document.createElement("option");
-  optionElement.value = site;
-  blockMultipleSites.appendChild(optionElement);
-}
+const updateBlockedSitesDropdown = sites => {
+  for (site of sites) {
+    var optionElement = document.createElement("option");
+    optionElement.value = site;
+    blockMultipleSites.appendChild(optionElement);
+  }
+};
+
+chrome.storage.sync.get(["sites", "currentUrl"], data => {
+  chrome.extension
+    .getBackgroundPage()
+    .console.log("init call to storage returns: ");
+  chrome.extension.getBackgroundPage().console.log(data);
+  updateBlockedSitesDropdown(data["sites"]);
+});
+
+// sites.sort();
 
 // var blockedSites = ["wikipedia.org", "google.com", "coursera.org"];
 
@@ -721,7 +722,7 @@ function addPlaceholder(wrapper) {
   const input_search = wrapper.querySelector(".selected-input");
   const tokens = wrapper.querySelectorAll(".selected-wrapper");
   if (!tokens.length && !(document.activeElement === input_search))
-    input_search.setAttribute("placeholder", "---------");
+    input_search.setAttribute("placeholder", "Select sites to unblock");
 }
 
 // Function that create the initial set of tokens with the options selected by the users
@@ -1038,3 +1039,40 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
+// get the block button and add an onclick function to it
+var blockCurrentButton = document.getElementById("blockCurrent");
+
+blockCurrentButton.onclick = () => {
+  chrome.storage.sync.get(["currentUrl", "sites"], data => {
+    var currUrl = data["currentUrl"];
+    var blockedArr = data["sites"];
+
+    if (typeof blockedArr === "undefined") {
+      blockedArr = [];
+    }
+
+    if (blockedArr.includes(currUrl)) {
+      return;
+    }
+
+    blockedArr.push(currUrl);
+    blockedArr.sort();
+    updateBlockedSitesDropdown(blockedArr);
+    chrome.storage.sync.set({ sites: blockedArr });
+  });
+};
+// chrome.extension
+//   .getBackgroundPage()
+//   .console.log("trying to set the storage in popup.js");
+// chrome.storage.sync.get("currentUrl", storageObj => {
+//   const urlStr = storageObj["currentUrl"];
+//   chrome.extension.getBackgroundPage().console.log(urlStr);
+//   blockCurrentButton.textContent = urlStr;
+// });
+
+// document.body.onload = function () {
+//   chrome.storge.sync.get("currentUrl", url => {
+//     blockCurrentButton.innerHTML = url;
+//   });
+// };

@@ -5,6 +5,7 @@ body {
   width: 700px;
   height: 400px;
   margin: 0;
+  box-sizing: border-box;
 }
 
 /* Style the tab */
@@ -259,23 +260,25 @@ body {
   font-family: "Roboto";
   padding: 0;
   margin: 0;
-  background: linear-gradient(
+  /* background: linear-gradient(
     -45deg,
     #183855 0,
     #183855 25%,
     #102331 50%,
     #22254c 75%,
     #22254c 100%
-  );
+  ); */
   background-repeat: no-repeat;
   background-attachment: fixed;
   margin-top: 100px;
   margin-left: 20px;
   color: #ecf0f1;
+  width: 100%;
+  height: 100%;
 }
 
 .container {
-  max-width: 50vw;
+  /* max-width: 50vw; */
   margin: 0 auto;
 }
 
@@ -368,12 +371,12 @@ select[data-multi-select-plugin] {
   display: flex;
   flex-direction: row;
 }
-
+/* we changed the width from 60 to 100 */
 .search-container .selected-input {
   background: none;
   border: 0;
   height: 20px;
-  width: 60px;
+  width: 150px;
   padding: 0;
   margin-bottom: 6px;
   -webkit-box-shadow: none;
@@ -406,7 +409,7 @@ select[data-multi-select-plugin] {
   background-size: 10px;
   background-repeat: no-repeat;
 }
-
+/* The actual drop down items */
 .search-container ul {
   position: absolute;
   list-style: none;
@@ -460,4 +463,134 @@ select[data-multi-select-plugin] {
 .autocomplete-list {
   max-height: 130px;
   overflow-y: auto;
+}
+
+#London {
+  /* background: #00b3bc; */
+  width: 100%;
+  height: 100%;
+}
+
+.allBlockFunctionality {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.allBlockFunctionality > * {
+  width: 80%;
+  height: 40%;
+}
+
+#blockCurrent {
+  width: 50%;
+  height: 20%;
+}
+
+/* .checkboxContainer {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+/* .checkboxContainer input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+} */
+
+/* Create a custom checkbox */
+/* .checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 25px;
+  width: 25px;
+  background-color: #eee;
+} */
+
+/* On mouse-over, add a grey background color */
+/* .checkboxContainer:hover input ~ .checkmark {
+  background-color: #ccc;
+} */
+/* When the checkbox is checked, add a blue background */
+/* .checkboxContainer input:checked ~ .checkmark {
+  background-color: #2196f3;
+} */
+
+/* Create the checkmark/indicator (hidden when not checked) */
+/* .checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+} */
+
+/* Show the checkmark when checked */
+/* .checkboxContainer input:checked ~ .checkmark:after {
+  display: block;
+} */
+
+/* Style the checkmark/indicator */
+/* .checkboxContainer .checkmark:after {
+  left: 9px;
+  top: 5px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+} */
+
+.checkboxAndButtonContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  /* justify-content: space-around; */
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.checkboxContainer,
+#blockCurrent {
+  /* padding: 30px; */
+  margin-right: 12px;
+}
+
+.unblockContainer {
+  display: flex;
+  flex-direction: row;
+  /* justify-content: center; */
+  /* justify-content: space-between; */
+  /* justify-content: space-around; */
+  justify-content: space-around;
+  /* align-items: center; */
+  align-items: baseline;
+  width: 60%;
+  height: 100%;
+}
+
+.container {
+  width: 80%;
+  height: 40%;
+  margin-right: 25px;
+}
+
+#unblockCurrent {
+  width: 40%;
+  height: 40%;
 }
