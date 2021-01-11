@@ -656,24 +656,23 @@ chrome.storage.sync.get(["currentLanguage"], function (result) {
   currentLanguageText.innerHTML = currentLanguage;
 });
 
-var sites = [
-  "https://www.news.google.com",
-  "https://www.aws.amazon.com",
-  "https://www.cloud.console.google.com",
-  "https://www.facebook.com",
-  "https://www.kit.snap.com",
-  "https://www.apple.com",
-];
-
-sites.sort();
-
 var blockMultipleSites = document.getElementById("blockCustomSitesMultiple");
 
-for (site of sites) {
-  var optionElement = document.createElement("option");
-  optionElement.value = site;
-  blockMultipleSites.appendChild(optionElement);
-}
+const updateBlockedSitesDropdown = (sites) => {
+  for (site of sites) {
+    var optionElement = document.createElement("option");
+    optionElement.value = site;
+    blockMultipleSites.appendChild(optionElement);
+  }
+};
+
+chrome.storage.sync.get(["sites", "currentUrl"], (data) => {
+  var blockedArr = data.sites;
+  if (typeof blockedArr === "undefined") {
+    blockedArr = [];
+  }
+  updateBlockedSitesDropdown(blockedArr);
+});
 
 // Advanced Options
 var advancedOptions = document.getElementById("advancedOptions");
