@@ -664,15 +664,429 @@ advancedOptions.onclick = clickAdvancedOptions;
   window.rSlider = RS;
 })();
 
-var samplingRateSlider = new rSlider({
-  target: "#samplingRateSlider",
-  values: ["low", "medium", "high"],
-  range: false,
-  tooltip: true,
-  scale: false,
-  labels: false,
-  width: 400
+// Tabs and tab content
+var linkParis = document.getElementById("link-Paris");
+openCity(linkParis, "Paris"); // open city Paris so it is pre-selected
+
+linkParis.onclick = function (element) {
+  openCity(linkParis, "Paris");
+};
+
+var linkLondon = document.getElementById("link-London");
+linkLondon.onclick = function (element) {
+  openCity(linkLondon, "London");
+};
+
+function openCity(evt, cityName) {
+  // Declare all variables
+  var i, tabcontent, tablinks;
+
+  // Get all elements with class="tabcontent" and hide them
+  tabcontent = document.getElementsByClassName("tabcontent");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+
+  // Get all elements with class="tablinks" and remove the class "active"
+  tablinks = document.getElementsByClassName("tablinks");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" active", "");
+  }
+
+  // Show the current tab, and add an "active" class to the button that opened the tab
+  document.getElementById(cityName).style.display = "block";
+  evt.className += " active";
+}
+
+// Dropdowns
+var languages = {
+  Afrikaans: "af",
+  Albanian: "sq",
+  Amharic: "am",
+  Arabic: "ar",
+  Armenian: "hy",
+  Azerbaijani: "az",
+  Basque: "eu",
+  Belarusian: "be",
+  Bengali: "bn",
+  Bosnian: "bs",
+  Bulgarian: "bg",
+  Catalan: "ca",
+  Cebuano: "ceb",
+  "Chinese (Simplified)": "zh-CN",
+  "Chinese (Traditional)": "zh-TW",
+  Corsican: "co",
+  Croatian: "hr",
+  Czech: "cs",
+  Danish: "da",
+  Dutch: "nl",
+  English: "en",
+  Esperanto: "eo",
+  Estonian: "et",
+  Finnish: "fi",
+  French: "fr",
+  Frisian: "fy",
+  Galician: "gl",
+  Georgian: "ka",
+  German: "de",
+  Greek: "el",
+  Gujarati: "gu",
+  "Haitian Creole": "ht",
+  Hausa: "ha",
+  Hawaiian: "haw",
+  Hebrew: "he",
+  Hindi: "hi",
+  Hmong: "hmn",
+  Hungarian: "hu",
+  Icelandic: "is",
+  Igbo: "ig",
+  Indonesian: "id",
+  Irish: "ga",
+  Italian: "it",
+  Japanese: "ja",
+  Javanese: "jv",
+  Kannada: "kn",
+  Kazakh: "kk",
+  Khmer: "km",
+  Kinyarwanda: "rw",
+  Korean: "ko",
+  Kurdish: "ku",
+  Kyrgyz: "ky",
+  Lao: "lo",
+  Latin: "la",
+  Latvian: "lv",
+  Lithuanian: "lt",
+  Luxembourgish: "lb",
+  Macedonian: "mk",
+  Malagasy: "mg",
+  Malay: "ms",
+  Malayalam: "ml",
+  Maltese: "mt",
+  Maori: "mi",
+  Marathi: "mr",
+  Mongolian: "mn",
+  "Myanmar (Burmese)": "my",
+  Nepali: "ne",
+  Norwegian: "no",
+  "Nyanja (Chichewa)": "ny",
+  "Odia (Oriya)": "or",
+  Pashto: "ps",
+  Persian: "fa",
+  Polish: "pl",
+  "Portuguese (Portugal, Brazil)": "pt",
+  Punjabi: "pa",
+  Romanian: "ro",
+  Russian: "ru",
+  Samoan: "sm",
+  Scots: "gd",
+  Serbian: "sr",
+  Sesotho: "st",
+  Shona: "sn",
+  Sindhi: "sd",
+  "Sinhala (Sinhalese)": "si",
+  Slovak: "sk",
+  Slovenian: "sl",
+  Somali: "so",
+  Spanish: "es",
+  Sundanese: "su",
+  Swahili: "sw",
+  Swedish: "sv",
+  "Tagalog (Filipino)": "tl",
+  Tajik: "tg",
+  Tamil: "ta",
+  Tatar: "tt",
+  Telugu: "te",
+  Thai: "th",
+  Turkish: "tr",
+  Turkmen: "tk",
+  Ukrainian: "uk",
+  Urdu: "ur",
+  Uyghur: "ug",
+  Uzbek: "uz",
+  Vietnamese: "vi",
+  Welsh: "cy",
+  Xhosa: "xh",
+  Yiddish: "yi",
+  Yoruba: "yo",
+  Zulu: "zu"
+};
+
+var languageDropdown = document.getElementById("languageDropdown");
+languageDropdown.onclick = () => {
+  document.getElementById("languageSelection").classList.toggle("show");
+};
+
+var languageSearch = document.getElementById("languageSearch");
+languageSearch.onkeyup = () => {
+  var input, filter, a, i;
+  input = document.getElementById("languageSearch");
+  filter = input.value.toUpperCase();
+  div = document.getElementById("languageSelection");
+  a = div.getElementsByTagName("a");
+  for (i = 0; i < a.length; i++) {
+    txtValue = a[i].textContent || a[i].innerText;
+    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+      a[i].style.display = "";
+    } else {
+      a[i].style.display = "none";
+    }
+  }
+};
+// used to check if a language was selected in settings save
+var languageSearchInitPlaceholder = languageSearch.placeholder;
+
+var languageSelection = document.getElementById("languageSelection");
+for (var lang in languages) {
+  var entry = document.createElement("a");
+  entry.innerHTML = lang;
+  entry.href = "#" + lang;
+  languageSelection.appendChild(entry);
+}
+
+var samplingRateSlider;
+chrome.storage.sync.get(["samplingRateVal"], function (result) {
+  var samplingRateInitVal;
+  if (
+    typeof result.samplingRateVal === "undefined" ||
+    result.samplingRateVal == null
+  ) {
+    samplingRateInitVal = "low";
+  } else {
+    samplingRateInitVal = result.samplingRateVal;
+  }
+  samplingRateSlider = new rSlider({
+    target: "#samplingRateSlider",
+    values: ["low", "medium", "high"],
+    range: false,
+    tooltip: true,
+    scale: false,
+    labels: false,
+    width: 400,
+    set: [samplingRateInitVal]
+  });
+  samplingRateSlider.onChange = () => {
+    updateSettings();
+  };
 });
+
+function setLanguage() {
+  // handle language setting
+  var selectedLanguage = languageSearch.placeholder;
+  chrome.extension.getBackgroundPage().console.log(selectedLanguage);
+  if (selectedLanguage !== languageSearchInitPlaceholder) {
+    chrome.storage.sync.set({ currentLanguage: selectedLanguage }, function () {
+      chrome.extension
+        .getBackgroundPage()
+        .console.log("selectedLanguage is set to " + selectedLanguage);
+    });
+    var currentLanguageText = document.getElementById("currentLanguageText");
+    currentLanguageText.innerHTML = selectedLanguage;
+  }
+}
+
+// Save Settings
+var updateSettings = () => {
+  var samplingRateVal = samplingRateSlider.getValue();
+  // advanced options was not clicked
+  if (
+    typeof wordDifficultySlider === "undefined" ||
+    wordDifficultySlider == null
+  ) {
+    chrome.storage.sync.set({ samplingRateVal: samplingRateVal }, function () {
+      chrome.extension
+        .getBackgroundPage()
+        .console.log("samplingRateVal is set to " + samplingRateVal);
+    });
+    chrome.extension.getBackgroundPage().console.log("got here");
+    setLanguage();
+    return;
+  }
+
+  var wordDifficultyVal = wordDifficultySlider.getValue();
+  var phraseLengthVals = phraseLengthSlider.getValue();
+  var phraseLengthVal1 = phraseLengthVals.substring(
+    0,
+    phraseLengthVals.search(",")
+  );
+  var phraseLengthVal2 = phraseLengthVals.substring(
+    phraseLengthVals.search(",") + 1,
+    phraseLengthVals.length
+  );
+
+  // set settings values for persistence
+  chrome.storage.sync.set(
+    {
+      samplingRateVal: samplingRateVal,
+      wordDifficultyVal: wordDifficultyVal,
+      phraseLengthVal1: phraseLengthVal1,
+      phraseLengthVal2: phraseLengthVal2
+    },
+    function (result) {
+      chrome.extension
+        .getBackgroundPage()
+        .console.log("values set to " + result);
+    }
+  );
+  setLanguage();
+};
+
+var languageEntries = document.querySelectorAll("#languageSelection > a");
+for (var entry of languageEntries) {
+  entry.onclick = (function (text) {
+    return function () {
+      languageSearch.placeholder = text;
+      updateSettings();
+    };
+  })(entry.innerHTML);
+}
+
+chrome.storage.sync.get(["currentLanguage"], function (result) {
+  var currentLanguage;
+  if (
+    typeof result.currentLanguage === "undefined" ||
+    result.currentLanguage == null
+  ) {
+    chrome.extension
+      .getBackgroundPage()
+      .console.log("currentLanguage not found");
+    currentLanguage = "Spanish";
+  } else {
+    chrome.extension.getBackgroundPage().console.log("currentLanguage found");
+    currentLanguage = result.currentLanguage;
+  }
+  var currentLanguageText = document.getElementById("currentLanguageText");
+  currentLanguageText.innerHTML = currentLanguage;
+});
+
+var sites = [
+  "https://www.news.google.com",
+  "https://www.aws.amazon.com",
+  "https://www.cloud.console.google.com",
+  "https://www.facebook.com",
+  "https://www.kit.snap.com",
+  "https://www.apple.com"
+];
+
+sites.sort();
+
+var blockMultipleSites = document.getElementById("blockCustomSitesMultiple");
+
+for (site of sites) {
+  var optionElement = document.createElement("option");
+  optionElement.value = site;
+  blockMultipleSites.appendChild(optionElement);
+}
+
+// Advanced Options
+var advancedOptions = document.getElementById("advancedOptions");
+var firstTime = true;
+var wordDifficultySlider;
+var phraseLengthSlider;
+var clickAdvancedOptions = () => {
+  if (firstTime) {
+    // All of this bs is to make the advanced options slides hidden by default
+    var wordDifficultyInput = document.createElement("input");
+    wordDifficultyInput.type = "text";
+    wordDifficultyInput.id = "wordDifficultySlider";
+    var phraseLengthInput = document.createElement("input");
+    phraseLengthInput.type = "text";
+    phraseLengthInput.id = "phraseLengthSlider";
+
+    var samplingRateInput = document.getElementById("samplingRateSlider");
+    samplingRateInput.parentNode.insertBefore(
+      wordDifficultyInput,
+      samplingRateInput.nextElementSibling.nextElementSibling
+    );
+    samplingRateInput.parentNode.insertBefore(
+      phraseLengthInput,
+      wordDifficultyInput.nextElementSibling
+    );
+
+    chrome.storage.sync.get(["wordDifficultyVal"], function (result) {
+      var wordDifficultyInitVal;
+      if (
+        typeof result.wordDifficultyVal === "undefined" ||
+        result.wordDifficultyVal == null
+      ) {
+        wordDifficultyInitVal = "easy";
+      } else {
+        wordDifficultyInitVal = result.wordDifficultyVal;
+      }
+      wordDifficultySlider = new rSlider({
+        target: "#wordDifficultySlider",
+        values: ["easy", "medium", "hard"],
+        range: false,
+        tooltip: true,
+        scale: false,
+        labels: false,
+        width: 400,
+        set: [wordDifficultyInitVal]
+      });
+      wordDifficultySlider.onChange = () => {
+        updateSettings();
+      };
+    });
+
+    chrome.storage.sync.get(
+      ["phraseLengthVal1", "phraseLengthVal2"],
+      function (result) {
+        var phraseLengthInitVal1;
+        var phraseLengthInitVal2;
+        if (
+          typeof result.phraseLengthVal1 === "undefined" ||
+          result.phraseLengthVal1 == null
+        ) {
+          phraseLengthInitVal1 = "short";
+        } else {
+          phraseLengthInitVal1 = result.phraseLengthVal1;
+        }
+        if (
+          typeof result.phraseLengthVal2 === "undefined" ||
+          result.phraseLengthVal2 == null
+        ) {
+          phraseLengthInitVal2 = "long";
+        } else {
+          phraseLengthInitVal2 = result.phraseLengthVal2;
+        }
+
+        phraseLengthSlider = new rSlider({
+          target: "#phraseLengthSlider",
+          values: ["short", "medium", "long"],
+          range: true,
+          tooltip: true,
+          scale: false,
+          labels: false,
+          width: 400,
+          set: [phraseLengthInitVal1, phraseLengthInitVal2]
+        });
+        phraseLengthSlider.onChange = () => {
+          updateSettings();
+        };
+      }
+    );
+    firstTime = false;
+  } else {
+    var samplingRateContainer = document.querySelector(".rs-container");
+    var wordDifficultyContainer =
+      samplingRateContainer.nextElementSibling.nextElementSibling;
+    var phraseLengthContainer =
+      wordDifficultyContainer.nextElementSibling.nextElementSibling;
+
+    if (wordDifficultyContainer.style.display === "none") {
+      wordDifficultyContainer.style.display = "block";
+    } else {
+      wordDifficultyContainer.style.display = "none";
+    }
+    if (phraseLengthContainer.style.display === "none") {
+      phraseLengthContainer.style.display = "block";
+    } else {
+      phraseLengthContainer.style.display = "none";
+    }
+  }
+};
+advancedOptions.onclick = clickAdvancedOptions;
+
+// MULTI-SELECTION DROPDOWN
 
 // Initialize function, create initial tokens with itens that are already selected by the user
 function init(element) {
