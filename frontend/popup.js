@@ -173,6 +173,8 @@ languageSearch.onkeyup = () => {
     }
   }
 };
+// used to check if a language was selected in settings save
+var languageSearchInitPlaceholder = languageSearch.placeholder;
 
 var languageSelection = document.getElementById("languageSelection");
 for (var lang in languages) {
@@ -180,6 +182,47 @@ for (var lang in languages) {
   entry.innerHTML = lang;
   entry.href = "#" + lang;
   languageSelection.appendChild(entry);
+}
+
+var languageEntries = document.querySelectorAll("#languageSelection > a");
+for (var entry of languageEntries) {
+  entry.onclick = (function (text) {
+    return function () {
+      languageSearch.placeholder = text;
+    };
+  })(entry.innerHTML);
+}
+
+chrome.storage.sync.get(["currentLanguage"], function (result) {
+  var currentLanguage;
+  if (
+    typeof result.currentLanguage === "undefined" ||
+    result.currentLanguage == null
+  ) {
+    chrome.extension
+      .getBackgroundPage()
+      .console.log("currentLanguage not found");
+    currentLanguage = "Spanish";
+  } else {
+    chrome.extension.getBackgroundPage().console.log("currentLanguage found");
+    currentLanguage = result.currentLanguage;
+  }
+  var currentLanguageText = document.getElementById("currentLanguageText");
+  currentLanguageText.innerHTML = currentLanguage;
+});
+
+function setLanguage() {
+  // handle language setting
+  var selectedLanguage = languageSearch.placeholder;
+  if (selectedLanguage !== languageSearchInitPlaceholder) {
+    chrome.storage.sync.set({ currentLanguage: selectedLanguage }, function () {
+      chrome.extension
+        .getBackgroundPage()
+        .console.log("selectedLanguage is set to " + selectedLanguage);
+    });
+    var currentLanguageText = document.getElementById("currentLanguageText");
+    currentLanguageText.innerHTML = selectedLanguage;
+  }
 }
 
 var sites = [
@@ -698,16 +741,12 @@ saveSettings.onclick = () => {
     typeof wordDifficultySlider === "undefined" ||
     wordDifficultySlider == null
   ) {
-    chrome.extension
-      .getBackgroundPage()
-      .console.log(
-        "chrome.storage.sync in saveSettings onclick is " + chrome.storage.sync
-      );
     chrome.storage.sync.set({ samplingRateVal: samplingRateVal }, function () {
       chrome.extension
         .getBackgroundPage()
         .console.log("samplingRateVal is set to " + samplingRateVal);
     });
+    setLanguage();
     return;
   }
 
@@ -746,6 +785,7 @@ saveSettings.onclick = () => {
       .getBackgroundPage()
       .console.log("phraseLengthVal2 is set to " + phraseLengthVal2);
   });
+  setLanguage();
 };
 
 // MULTI-SELECTION DROPDOWN
