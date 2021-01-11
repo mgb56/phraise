@@ -921,10 +921,12 @@ var updateSettings = () => {
       phraseLengthVal1: phraseLengthVal1,
       phraseLengthVal2: phraseLengthVal2
     },
-    function (result) {
+    function () {
       chrome.extension
         .getBackgroundPage()
-        .console.log("values set to " + result);
+        .console.log(
+          `samplingRateVal set to ${samplingRateVal}, wordDifficultyVal set to ${wordDifficultyVal}, phraseLengthVal1 set to ${phraseLengthVal1}, phraseLengthVal2 set to ${phraseLengthVal2}`
+        );
     }
   );
   setLanguage();
@@ -992,14 +994,30 @@ var clickAdvancedOptions = () => {
     phraseLengthInput.type = "text";
     phraseLengthInput.id = "phraseLengthSlider";
 
-    var samplingRateInput = document.getElementById("samplingRateSlider");
-    samplingRateInput.parentNode.insertBefore(
-      wordDifficultyInput,
-      samplingRateInput.nextElementSibling.nextElementSibling
+    var samplingRateContainer = document.getElementById(
+      "samplingRateContainer"
     );
-    samplingRateInput.parentNode.insertBefore(
-      phraseLengthInput,
-      wordDifficultyInput.nextElementSibling
+    var wordDifficultyContainer = document.createElement("div");
+    wordDifficultyContainer.id = "wordDifficultyContainer";
+    var wordDifficultyLabel = document.createElement("span");
+    wordDifficultyLabel.innerHTML = "Word Difficulty: ";
+    wordDifficultyContainer.appendChild(wordDifficultyLabel);
+    wordDifficultyContainer.appendChild(wordDifficultyInput);
+
+    var phraseLengthContainer = document.createElement("div");
+    phraseLengthContainer.id = "phraseLengthContainer";
+    var phraseLengthLabel = document.createElement("span");
+    phraseLengthLabel.innerHTML = "Phrase Length: ";
+    phraseLengthContainer.appendChild(phraseLengthLabel);
+    phraseLengthContainer.appendChild(phraseLengthInput);
+
+    samplingRateContainer.parentNode.insertBefore(
+      wordDifficultyContainer,
+      samplingRateContainer.nextElementSibling
+    );
+    samplingRateContainer.parentNode.insertBefore(
+      phraseLengthContainer,
+      wordDifficultyContainer.nextElementSibling
     );
 
     chrome.storage.sync.get(["wordDifficultyVal"], function (result) {
@@ -1066,21 +1084,28 @@ var clickAdvancedOptions = () => {
     );
     firstTime = false;
   } else {
-    var samplingRateContainer = document.querySelector(".rs-container");
+    var samplingRateSliderContainer = document.querySelector(".rs-container");
     var wordDifficultyContainer =
-      samplingRateContainer.nextElementSibling.nextElementSibling;
-    var phraseLengthContainer =
-      wordDifficultyContainer.nextElementSibling.nextElementSibling;
+      samplingRateSliderContainer.parentNode.nextElementSibling;
+    var phraseLengthContainer = wordDifficultyContainer.nextElementSibling;
 
-    if (wordDifficultyContainer.style.display === "none") {
-      wordDifficultyContainer.style.display = "block";
-    } else {
-      wordDifficultyContainer.style.display = "none";
+    for (var child of wordDifficultyContainer.childNodes) {
+      if (child.tagName !== "INPUT") {
+        if (child.style.display === "none") {
+          child.style.display = "block";
+        } else {
+          child.style.display = "none";
+        }
+      }
     }
-    if (phraseLengthContainer.style.display === "none") {
-      phraseLengthContainer.style.display = "block";
-    } else {
-      phraseLengthContainer.style.display = "none";
+    for (var child of phraseLengthContainer.childNodes) {
+      if (child.tagName !== "INPUT") {
+        if (child.style.display === "none") {
+          child.style.display = "block";
+        } else {
+          child.style.display = "none";
+        }
+      }
     }
   }
 };
