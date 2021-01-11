@@ -1,165 +1,3 @@
-// let changeColor = document.getElementById("changeColor");
-
-// chrome.storage.sync.get("color", function(data) {
-//   changeColor.style.backgroundColor = data.color;
-//   changeColor.setAttribute("value", data.color);
-// });
-
-// Tabs and tab content
-var linkParis = document.getElementById("link-Paris");
-openCity(linkParis, "Paris"); // open city Paris so it is pre-selected
-
-linkParis.onclick = function (element) {
-  openCity(linkParis, "Paris");
-};
-
-var linkLondon = document.getElementById("link-London");
-linkLondon.onclick = function (element) {
-  openCity(linkLondon, "London");
-};
-
-function openCity(evt, cityName) {
-  // Declare all variables
-  var i, tabcontent, tablinks;
-
-  // Get all elements with class="tabcontent" and hide them
-  tabcontent = document.getElementsByClassName("tabcontent");
-  for (i = 0; i < tabcontent.length; i++) {
-    tabcontent[i].style.display = "none";
-  }
-
-  // Get all elements with class="tablinks" and remove the class "active"
-  tablinks = document.getElementsByClassName("tablinks");
-  for (i = 0; i < tablinks.length; i++) {
-    tablinks[i].className = tablinks[i].className.replace(" active", "");
-  }
-
-  // Show the current tab, and add an "active" class to the button that opened the tab
-  document.getElementById(cityName).style.display = "block";
-  evt.className += " active";
-}
-
-// Dropdowns
-var blockMultipleSites = document.getElementById("blockCustomSitesMultiple");
-
-const updateBlockedSitesDropdown = sites => {
-  for (site of sites) {
-    var optionElement = document.createElement("option");
-    optionElement.value = site;
-    blockMultipleSites.appendChild(optionElement);
-  }
-};
-
-chrome.storage.sync.get(["sites", "currentUrl"], data => {
-  chrome.extension
-    .getBackgroundPage()
-    .console.log("init call to storage returns: ");
-  chrome.extension.getBackgroundPage().console.log(data);
-  updateBlockedSitesDropdown(data["sites"]);
-});
-
-// sites.sort();
-
-// var blockedSites = ["wikipedia.org", "google.com", "coursera.org"];
-
-// var blocklistDropdown = document.getElementById("blocklistDropdown");
-// blocklistDropdown.onclick = () => {
-//   document.getElementById("blockSelection").classList.toggle("show");
-// };
-
-// var blockSelection = document.getElementById("blockSelection");
-// for (var site of blockedSites) {
-//   var entry = document.createElement("a");
-//   entry.innerHTML = site;
-//   entry.href = "#" + site;
-//   blockSelection.appendChild(entry);
-// }
-
-// var blockList = document.getElementById("blockList");
-// blockList.onkeyup = () => {
-//   var input, filter, a, i;
-//   input = document.getElementById("blockList");
-//   filter = input.value.toUpperCase();
-//   div = document.getElementById("blockSelection");
-//   a = div.getElementsByTagName("a");
-//   for (i = 0; i < a.length; i++) {
-//     txtValue = a[i].textContent || a[i].innerText;
-//     if (txtValue.toUpperCase().indexOf(filter) > -1) {
-//       a[i].style.display = "";
-//     } else {
-//       a[i].style.display = "none";
-//     }
-//   }
-// };
-
-// Advanced Options
-var advancedOptions = document.getElementById("advancedOptions");
-var firstTime = true;
-var clickAdvancedOptions = () => {
-  if (firstTime) {
-    // All of this bs is to make the advanced options slides hidden by default
-    var wordDifficultyInput = document.createElement("input");
-    wordDifficultyInput.type = "text";
-    wordDifficultyInput.id = "wordDifficultySlider";
-    var phraseLengthInput = document.createElement("input");
-    phraseLengthInput.type = "text";
-    phraseLengthInput.id = "phraseLengthSlider";
-
-    var samplingRateInput = document.getElementById("samplingRateSlider");
-    samplingRateInput.parentNode.insertBefore(
-      wordDifficultyInput,
-      samplingRateInput.nextElementSibling.nextElementSibling
-    );
-    samplingRateInput.parentNode.insertBefore(
-      phraseLengthInput,
-      wordDifficultyInput.nextElementSibling
-    );
-
-    var wordDifficultySlider = new rSlider({
-      target: "#wordDifficultySlider",
-      values: ["easy", "medium", "hard"],
-      range: false,
-      tooltip: true,
-      scale: false,
-      labels: false,
-      width: 400
-    });
-
-    var phraseLengthSlider = new rSlider({
-      target: "#phraseLengthSlider",
-      values: ["short", "medium", "long"],
-      range: true,
-      tooltip: true,
-      scale: false,
-      labels: false,
-      width: 400
-    });
-    firstTime = false;
-  } else {
-    var samplingRateContainer = document.querySelector(".rs-container");
-    var wordDifficultyContainer =
-      samplingRateContainer.nextElementSibling.nextElementSibling;
-    var phraseLengthContainer =
-      wordDifficultyContainer.nextElementSibling.nextElementSibling;
-
-    chrome.extension.getBackgroundPage().console.log(samplingRateContainer);
-    chrome.extension.getBackgroundPage().console.log(wordDifficultyContainer);
-    chrome.extension.getBackgroundPage().console.log(phraseLengthContainer);
-
-    if (wordDifficultyContainer.style.display === "none") {
-      wordDifficultyContainer.style.display = "block";
-    } else {
-      wordDifficultyContainer.style.display = "none";
-    }
-    if (phraseLengthContainer.style.display === "none") {
-      phraseLengthContainer.style.display = "block";
-    } else {
-      phraseLengthContainer.style.display = "none";
-    }
-  }
-};
-advancedOptions.onclick = clickAdvancedOptions;
-
 // Slider
 (function () {
   "use strict";
@@ -184,7 +22,7 @@ advancedOptions.onclick = clickAdvancedOptions;
 
     this.values = {
       start: null,
-      end: null
+      end: null,
     };
     this.conf = {
       target: null,
@@ -197,7 +35,7 @@ advancedOptions.onclick = clickAdvancedOptions;
       tooltip: true,
       step: null,
       disabled: false,
-      onChange: null
+      onChange: null,
     };
 
     this.cls = {
@@ -207,7 +45,7 @@ advancedOptions.onclick = clickAdvancedOptions;
       pointer: "rs-pointer",
       scale: "rs-scale",
       noscale: "rs-noscale",
-      tip: "rs-tooltip"
+      tip: "rs-tooltip",
     };
 
     for (var i in this.conf) {
@@ -666,7 +504,7 @@ var languages = {
   Xhosa: "xh",
   Yiddish: "yi",
   Yoruba: "yo",
-  Zulu: "zu"
+  Zulu: "zu",
 };
 
 var languageDropdown = document.getElementById("languageDropdown");
@@ -720,7 +558,7 @@ chrome.storage.sync.get(["samplingRateVal"], function (result) {
     scale: false,
     labels: false,
     width: 400,
-    set: [samplingRateInitVal]
+    set: [samplingRateInitVal],
   });
   samplingRateSlider.onChange = () => {
     updateSettings();
@@ -777,7 +615,7 @@ var updateSettings = () => {
       samplingRateVal: samplingRateVal,
       wordDifficultyVal: wordDifficultyVal,
       phraseLengthVal1: phraseLengthVal1,
-      phraseLengthVal2: phraseLengthVal2
+      phraseLengthVal2: phraseLengthVal2,
     },
     function () {
       chrome.extension
@@ -824,7 +662,7 @@ var sites = [
   "https://www.cloud.console.google.com",
   "https://www.facebook.com",
   "https://www.kit.snap.com",
-  "https://www.apple.com"
+  "https://www.apple.com",
 ];
 
 sites.sort();
@@ -896,7 +734,7 @@ var clickAdvancedOptions = () => {
         scale: false,
         labels: false,
         width: 400,
-        set: [wordDifficultyInitVal]
+        set: [wordDifficultyInitVal],
       });
       wordDifficultySlider.onChange = () => {
         updateSettings();
@@ -933,7 +771,7 @@ var clickAdvancedOptions = () => {
           scale: false,
           labels: false,
           width: 400,
-          set: [phraseLengthInitVal1, phraseLengthInitVal2]
+          set: [phraseLengthInitVal1, phraseLengthInitVal2],
         });
         phraseLengthSlider.onChange = () => {
           updateSettings();
@@ -1222,17 +1060,17 @@ function autocomplete(query, options) {
 function getOptions(select) {
   // Select all the options available
   const all_options = Array.from(select.querySelectorAll("option")).map(
-    el => el.value
+    (el) => el.value
   );
 
   // Get the options that are selected from the user
   const options_selected = Array.from(
     select.querySelectorAll("option:checked")
-  ).map(el => el.value);
+  ).map((el) => el.value);
 
   // Create an autocomplete options array with the options that are not selected by the user
   const autocomplete_options = [];
-  all_options.forEach(option => {
+  all_options.forEach((option) => {
     if (!options_selected.includes(option)) {
       autocomplete_options.push(option);
     }
@@ -1242,7 +1080,7 @@ function getOptions(select) {
 
   return {
     options_selected,
-    autocomplete_options
+    autocomplete_options,
   };
 }
 
@@ -1309,7 +1147,7 @@ function addOption(target, val, text) {
 document.addEventListener("DOMContentLoaded", () => {
   // get select that has the options available
   const select = document.querySelectorAll("[data-multi-select-plugin]");
-  select.forEach(select => {
+  select.forEach((select) => {
     init(select);
   });
 
@@ -1341,7 +1179,7 @@ document.addEventListener("DOMContentLoaded", () => {
 var blockCurrentButton = document.getElementById("blockCurrent");
 
 blockCurrentButton.onclick = () => {
-  chrome.storage.sync.get(["currentUrl", "sites"], data => {
+  chrome.storage.sync.get(["currentUrl", "sites"], (data) => {
     var currUrl = data["currentUrl"];
     var blockedArr = data["sites"];
 
@@ -1359,17 +1197,3 @@ blockCurrentButton.onclick = () => {
     chrome.storage.sync.set({ sites: blockedArr });
   });
 };
-// chrome.extension
-//   .getBackgroundPage()
-//   .console.log("trying to set the storage in popup.js");
-// chrome.storage.sync.get("currentUrl", storageObj => {
-//   const urlStr = storageObj["currentUrl"];
-//   chrome.extension.getBackgroundPage().console.log(urlStr);
-//   blockCurrentButton.textContent = urlStr;
-// });
-
-// document.body.onload = function () {
-//   chrome.storge.sync.get("currentUrl", url => {
-//     blockCurrentButton.innerHTML = url;
-//   });
-// };
