@@ -11,12 +11,18 @@
 
     <!-- Tab content -->
     <div id="Paris" class="tabcontent">
-      <input type="text" id="samplingRateSlider" />
+      <div id="samplingRateContainer">
+        <span id="samplingRateLabel">Sampling Rate: </span
+        ><input type="text" id="samplingRateSlider" />
+      </div>
       <div class="dropdown">
         <button class="dropbtn" id="languageDropdown">Language</button>
         <div id="languageSelection" class="dropdown-content">
           <input type="text" placeholder="Search.." id="languageSearch" />
         </div>
+        <span id="currentLanguageSection"
+          >Current Language: <span id="currentLanguageText"></span
+        ></span>
       </div>
       <button id="advancedOptions">Advanced Options</button>
     </div>
@@ -36,14 +42,7 @@
               multiple
               data-multi-select-plugin
               id="blockCustomSitesMultiple"
-            >
-              <!-- <option value="Volvo" selected>Volvo</option>
-                    <option value="Mercedes" selected>Mercedes</option>
-                    <option value="Hilux">Hilux</option>
-                    <option value="Corsa">Corsa</option>
-                    <option value="BMW">BMW</option>
-                    <option value="Ferrari">Ferrari</option> -->
-            </select>
+            ></select>
           </div>
           <button id="unblockCurrent">Unblock selected sites</button>
         </div>
