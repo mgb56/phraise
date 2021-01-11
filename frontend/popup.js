@@ -360,7 +360,6 @@
   window.rSlider = RS;
 })();
 
-// Tabs and tab content
 var linkParis = document.getElementById("link-Paris");
 openCity(linkParis, "Paris"); // open city Paris so it is pre-selected
 
@@ -528,6 +527,7 @@ languageSearch.onkeyup = () => {
     }
   }
 };
+
 // used to check if a language was selected in settings save
 var languageSearchInitPlaceholder = languageSearch.placeholder;
 
@@ -667,12 +667,35 @@ const updateBlockedSitesDropdown = (sites) => {
 };
 
 chrome.storage.sync.get(["sites", "currentUrl"], (data) => {
-  var blockedArr = data.sites;
-  if (typeof blockedArr === "undefined") {
-    blockedArr = [];
-  }
-  updateBlockedSitesDropdown(blockedArr);
+  chrome.extension
+    .getBackgroundPage()
+    .console.log("init call to storage returns: ");
+  chrome.extension.getBackgroundPage().console.log(data);
+  updateBlockedSitesDropdown(data["sites"]);
 });
+
+// get the block button and add an onclick function to it
+var blockCurrentButton = document.getElementById("blockCurrent");
+
+blockCurrentButton.onclick = () => {
+  chrome.storage.sync.get(["currentUrl", "sites"], (data) => {
+    var currUrl = data["currentUrl"];
+    var blockedArr = data["sites"];
+
+    if (typeof blockedArr === "undefined") {
+      blockedArr = [];
+    }
+
+    if (blockedArr.includes(currUrl)) {
+      return;
+    }
+
+    blockedArr.push(currUrl);
+    blockedArr.sort();
+    updateBlockedSitesDropdown(blockedArr);
+    chrome.storage.sync.set({ sites: blockedArr });
+  });
+};
 
 // Advanced Options
 var advancedOptions = document.getElementById("advancedOptions");
@@ -1173,26 +1196,3 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
-
-// get the block button and add an onclick function to it
-var blockCurrentButton = document.getElementById("blockCurrent");
-
-blockCurrentButton.onclick = () => {
-  chrome.storage.sync.get(["currentUrl", "sites"], (data) => {
-    var currUrl = data["currentUrl"];
-    var blockedArr = data["sites"];
-
-    if (typeof blockedArr === "undefined") {
-      blockedArr = [];
-    }
-
-    if (blockedArr.includes(currUrl)) {
-      return;
-    }
-
-    blockedArr.push(currUrl);
-    blockedArr.sort();
-    updateBlockedSitesDropdown(blockedArr);
-    chrome.storage.sync.set({ sites: blockedArr });
-  });
-};
