@@ -633,6 +633,7 @@ for (var entry of languageEntries) {
   entry.onclick = (function (text) {
     return function () {
       languageSearch.placeholder = text;
+      languageSelection.classList.toggle("show");
       updateSettings();
     };
   })(entry.innerHTML);
