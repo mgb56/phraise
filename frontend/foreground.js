@@ -65,7 +65,7 @@ var filterStringToVal = {
   // buggy with value 1
   short: 2,
   average: 5,
-  long: 7,
+  long: 7
 };
 
 chrome.storage.sync.get(

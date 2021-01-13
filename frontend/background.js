@@ -8,11 +8,11 @@ chrome.runtime.onInstalled.addListener(function () {
       {
         conditions: [
           new chrome.declarativeContent.PageStateMatcher({
-            pageUrl: { hostEquals: "developer.chrome.com" },
-          }),
+            pageUrl: { hostEquals: "developer.chrome.com" }
+          })
         ],
-        actions: [new chrome.declarativeContent.ShowPageAction()],
-      },
+        actions: [new chrome.declarativeContent.ShowPageAction()]
+      }
     ]);
   });
 });
@@ -47,7 +47,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   fetch("http://0.0.0.0:33507/", {
     method: "POST",
     body: JSON.stringify(request.array),
-    headers: { "Content-type": "application/json; charset=UTF-8" },
+    headers: { "Content-type": "application/json; charset=UTF-8" }
   })
     // .then((response) => console.log(response))
     .then((response) => response.json())
