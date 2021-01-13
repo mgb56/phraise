@@ -1,3 +1,4 @@
+const samplingRate = 0.005;
 var translatedNodes = [];
 var translatedText = [];
 

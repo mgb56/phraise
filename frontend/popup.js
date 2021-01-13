@@ -584,10 +584,8 @@ function setLanguage() {
 var updateSettings = () => {
   var samplingRateVal = samplingRateSlider.getValue();
   // advanced options was not clicked
-  if (
-    typeof wordDifficultySlider === "undefined" ||
-    wordDifficultySlider == null
-  ) {
+
+  if (typeof phraseLengthSlider === "undefined" || phraseLengthSlider == null) {
     chrome.storage.sync.set({ samplingRateVal: samplingRateVal }, function () {
       chrome.extension
         .getBackgroundPage()
@@ -598,7 +596,7 @@ var updateSettings = () => {
     return;
   }
 
-  var wordDifficultyVal = wordDifficultySlider.getValue();
+  // var wordDifficultyVal = wordDifficultySlider.getValue();
   var phraseLengthVals = phraseLengthSlider.getValue();
   var phraseLengthVal1 = phraseLengthVals.substring(
     0,
@@ -613,16 +611,15 @@ var updateSettings = () => {
   chrome.storage.sync.set(
     {
       samplingRateVal: samplingRateVal,
-      wordDifficultyVal: wordDifficultyVal,
+      // wordDifficultyVal: wordDifficultyVal,
       phraseLengthVal1: phraseLengthVal1,
       phraseLengthVal2: phraseLengthVal2,
     },
     function () {
-      chrome.extension
-        .getBackgroundPage()
-        .console.log(
-          `samplingRateVal set to ${samplingRateVal}, wordDifficultyVal set to ${wordDifficultyVal}, phraseLengthVal1 set to ${phraseLengthVal1}, phraseLengthVal2 set to ${phraseLengthVal2}`
-        );
+      chrome.extension.getBackgroundPage().console.log(
+        // `samplingRateVal set to ${samplingRateVal}, wordDifficultyVal set to ${wordDifficultyVal}, phraseLengthVal1 set to ${phraseLengthVal1}, phraseLengthVal2 set to ${phraseLengthVal2}`
+        `samplingRateVal set to ${samplingRateVal}, phraseLengthVal1 set to ${phraseLengthVal1}, phraseLengthVal2 set to ${phraseLengthVal2}`
+      );
     }
   );
   setLanguage();
@@ -678,6 +675,8 @@ const updateBlockedSitesDropdown = (sites) => {
   for (site of sites) {
     var optionElement = document.createElement("option");
     optionElement.value = site;
+    optionElement.onclick = () =>
+      chrome.extension.getBackgroundPage().console.log("click me! click me!");
     blockMultipleSites.appendChild(optionElement);
   }
 };
@@ -686,6 +685,19 @@ const updateBlockedSitesDropdown = (sites) => {
 var blockSitesCache;
 
 var unblockSelectedSitesButton = document.getElementById("unblockCurrent");
+unblockSelectedSitesButton.hidden = true;
+
+const didClickTag = () => {
+  chrome.extension.getBackgroundPage().console.log("lsjfliewijfgo");
+  // unblockSelectedSitesButton.hidden = !unblockSelectedSitesButton.hidden;
+};
+
+window.onload = () => {
+  var blockMultipleSitesInnerInput = document.querySelector(".selected-input");
+  var blockMultipleSitesATag = document.querySelector(".dropdown-icon");
+  blockMultipleSitesInnerInput.onclick = didClickTag;
+  blockMultipleSitesATag.onclick = didClickTag;
+};
 
 const didClickUnblockSitesButton = () => {
   chrome.extension.getBackgroundPage().console.log("did press button");
@@ -753,14 +765,14 @@ blockCurrentButton.onclick = () => {
 // Advanced Options
 var advancedOptions = document.getElementById("advancedOptions");
 var firstTime = true;
-var wordDifficultySlider;
+// var wordDifficultySlider;
 var phraseLengthSlider;
 var clickAdvancedOptions = () => {
   if (firstTime) {
     // All of this bs is to make the advanced options slides hidden by default
-    var wordDifficultyInput = document.createElement("input");
-    wordDifficultyInput.type = "text";
-    wordDifficultyInput.id = "wordDifficultySlider";
+    // var wordDifficultyInput = document.createElement("input");
+    // wordDifficultyInput.type = "text";
+    // wordDifficultyInput.id = "wordDifficultySlider";
     var phraseLengthInput = document.createElement("input");
     phraseLengthInput.type = "text";
     phraseLengthInput.id = "phraseLengthSlider";
@@ -768,12 +780,12 @@ var clickAdvancedOptions = () => {
     var samplingRateContainer = document.getElementById(
       "samplingRateContainer"
     );
-    var wordDifficultyContainer = document.createElement("div");
-    wordDifficultyContainer.id = "wordDifficultyContainer";
-    var wordDifficultyLabel = document.createElement("span");
-    wordDifficultyLabel.innerHTML = "Word Difficulty: ";
-    wordDifficultyContainer.appendChild(wordDifficultyLabel);
-    wordDifficultyContainer.appendChild(wordDifficultyInput);
+    // var wordDifficultyContainer = document.createElement("div");
+    // wordDifficultyContainer.id = "wordDifficultyContainer";
+    // var wordDifficultyLabel = document.createElement("span");
+    // wordDifficultyLabel.innerHTML = "Word Difficulty: ";
+    // wordDifficultyContainer.appendChild(wordDifficultyLabel);
+    // wordDifficultyContainer.appendChild(wordDifficultyInput);
 
     var phraseLengthContainer = document.createElement("div");
     phraseLengthContainer.id = "phraseLengthContainer";
@@ -783,38 +795,38 @@ var clickAdvancedOptions = () => {
     phraseLengthContainer.appendChild(phraseLengthInput);
 
     samplingRateContainer.parentNode.insertBefore(
-      wordDifficultyContainer,
+      phraseLengthContainer,
       samplingRateContainer.nextElementSibling
     );
-    samplingRateContainer.parentNode.insertBefore(
-      phraseLengthContainer,
-      wordDifficultyContainer.nextElementSibling
-    );
+    // samplingRateContainer.parentNode.insertBefore(
+    //   phraseLengthContainer,
+    //   wordDifficultyContainer.nextElementSibling
+    // );
 
-    chrome.storage.sync.get(["wordDifficultyVal"], function (result) {
-      var wordDifficultyInitVal;
-      if (
-        typeof result.wordDifficultyVal === "undefined" ||
-        result.wordDifficultyVal == null
-      ) {
-        wordDifficultyInitVal = "easy";
-      } else {
-        wordDifficultyInitVal = result.wordDifficultyVal;
-      }
-      wordDifficultySlider = new rSlider({
-        target: "#wordDifficultySlider",
-        values: ["easy", "medium", "hard"],
-        range: false,
-        tooltip: true,
-        scale: false,
-        labels: false,
-        width: 400,
-        set: [wordDifficultyInitVal],
-      });
-      wordDifficultySlider.onChange = () => {
-        updateSettings();
-      };
-    });
+    // chrome.storage.sync.get(["wordDifficultyVal"], function (result) {
+    //   var wordDifficultyInitVal;
+    //   if (
+    //     typeof result.wordDifficultyVal === "undefined" ||
+    //     result.wordDifficultyVal == null
+    //   ) {
+    //     wordDifficultyInitVal = "easy";
+    //   } else {
+    //     wordDifficultyInitVal = result.wordDifficultyVal;
+    //   }
+    //   wordDifficultySlider = new rSlider({
+    //     target: "#wordDifficultySlider",
+    //     values: ["easy", "medium", "hard"],
+    //     range: false,
+    //     tooltip: true,
+    //     scale: false,
+    //     labels: false,
+    //     width: 400,
+    //     set: [wordDifficultyInitVal]
+    //   });
+    //   wordDifficultySlider.onChange = () => {
+    //     updateSettings();
+    //   };
+    // });
 
     chrome.storage.sync.get(
       ["phraseLengthVal1", "phraseLengthVal2"],
@@ -856,19 +868,21 @@ var clickAdvancedOptions = () => {
     firstTime = false;
   } else {
     var samplingRateSliderContainer = document.querySelector(".rs-container");
-    var wordDifficultyContainer =
+    // var wordDifficultyContainer =
+    //   samplingRateSliderContainer.parentNode.nextElementSibling;
+    // var phraseLengthContainer = wordDifficultyContainer.nextElementSibling;
+    var phraseLengthContainer =
       samplingRateSliderContainer.parentNode.nextElementSibling;
-    var phraseLengthContainer = wordDifficultyContainer.nextElementSibling;
 
-    for (var child of wordDifficultyContainer.childNodes) {
-      if (child.tagName !== "INPUT") {
-        if (child.style.display === "none") {
-          child.style.display = "block";
-        } else {
-          child.style.display = "none";
-        }
-      }
-    }
+    // for (var child of wordDifficultyContainer.childNodes) {
+    //   if (child.tagName !== "INPUT") {
+    //     if (child.style.display === "none") {
+    //       child.style.display = "block";
+    //     } else {
+    //       child.style.display = "none";
+    //     }
+    //   }
+    // }
     for (var child of phraseLengthContainer.childNodes) {
       if (child.tagName !== "INPUT") {
         if (child.style.display === "none") {
@@ -1084,6 +1098,7 @@ function populateAutocompleteList(select, query, dropdown = false) {
 
 // Listener to autocomplete results when clicked set the selected property in the select option
 function selectOption(e) {
+  unblockSelectedSitesButton.hidden = false;
   const wrapper = e.target.parentNode.parentNode.parentNode;
   const input_search = wrapper.querySelector(".selected-input");
   const option = wrapper.querySelector(
@@ -1178,6 +1193,18 @@ function removeToken(e) {
   const event = new Event("click");
   dropdown.dispatchEvent(event);
   e.stopPropagation();
+
+  var parentInputTag = document.getElementById("blockCustomSitesMultiple");
+  var didFindSelectedTag = false;
+  for (var child of parentInputTag) {
+    if (child.selected === true) {
+      didFindSelectedTag = true;
+      break;
+    }
+  }
+  if (!didFindSelectedTag) {
+    unblockSelectedSitesButton.hidden = true;
+  }
 }
 
 // Listen for 2 sequence of hits on the delete key, if this happens delete the last token if exist

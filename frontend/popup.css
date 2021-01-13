@@ -2,10 +2,11 @@ body {
   /* width: 400px;
   height: 300px; */
   /* padding: 100px; */
-  width: 700px;
-  height: 400px;
+  width: 600px;
+  height: 350px;
   margin: 0;
   box-sizing: border-box;
+  background: #78da78;
 }
 
 /* Style the tab */
@@ -195,9 +196,31 @@ body {
   align-items: center;
 }
 #samplingRateLabel,
-#wordDifficultyLabel,
-#phraseLengthLabel {
-  /* width: 20%; */
+/* #wordDifficultyLabel, */
+#phraseLengthLabel,
+#currentLanguageSection, 
+#unblockCurrent,
+#blockCurrent {
+  color: white;
+  text-shadow: 1px 1px grey;
+}
+
+/* MARK: buttons on block page */
+#unblockCurrent,
+#blockCurrent,
+#languageDropdown {
+  background: darkgreen;
+  border-radius: 10px;
+  /* outline: none; */
+  outline: grey;
+  border: 1px solid white;
+}
+
+#unblockCurrent:hover,
+#blockCurrent:hover,
+#languageDropdown:hover {
+  background: green;
+  cursor: pointer;
 }
 /* #samplingRateSlider,
 #wordDifficultySlider,
