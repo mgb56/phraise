@@ -22,7 +22,7 @@
 
     this.values = {
       start: null,
-      end: null,
+      end: null
     };
     this.conf = {
       target: null,
@@ -35,7 +35,7 @@
       tooltip: true,
       step: null,
       disabled: false,
-      onChange: null,
+      onChange: null
     };
 
     this.cls = {
@@ -45,7 +45,7 @@
       pointer: "rs-pointer",
       scale: "rs-scale",
       noscale: "rs-noscale",
-      tip: "rs-tooltip",
+      tip: "rs-tooltip"
     };
 
     for (var i in this.conf) {
@@ -503,7 +503,7 @@ var languages = {
   Xhosa: "xh",
   Yiddish: "yi",
   Yoruba: "yo",
-  Zulu: "zu",
+  Zulu: "zu"
 };
 
 var languageDropdown = document.getElementById("languageDropdown");
@@ -558,7 +558,7 @@ chrome.storage.sync.get(["samplingRateVal"], function (result) {
     scale: false,
     labels: false,
     width: 400,
-    set: [samplingRateInitVal],
+    set: [samplingRateInitVal]
   });
   samplingRateSlider.onChange = () => {
     updateSettings();
@@ -615,7 +615,7 @@ var updateSettings = () => {
       samplingRateVal: samplingRateVal,
       wordDifficultyVal: wordDifficultyVal,
       phraseLengthVal1: phraseLengthVal1,
-      phraseLengthVal2: phraseLengthVal2,
+      phraseLengthVal2: phraseLengthVal2
     },
     function () {
       chrome.extension
@@ -659,7 +659,22 @@ chrome.storage.sync.get(["currentLanguage"], function (result) {
 
 var blockMultipleSites = document.getElementById("blockCustomSitesMultiple");
 
-const updateBlockedSitesDropdown = (sites) => {
+const updateBlockedSitesDropdown = sites => {
+  // first remove all the current option tags
+  while (blockMultipleSites.firstChild) {
+    blockMultipleSites.removeChild(blockMultipleSites.firstChild);
+  }
+  // now, remove all the selected tags, which all have the class of selected-wrapper
+  var selectedElements = document.querySelectorAll(".selected-wrapper");
+  for (var element of selectedElements) {
+    element.remove();
+  }
+
+  const input_search = document.querySelector(".selected-input");
+  const tokens = document.querySelectorAll(".selected-wrapper");
+  if (!tokens.length && !(document.activeElement === input_search))
+    input_search.setAttribute("placeholder", "Select sites to unblock");
+
   for (site of sites) {
     var optionElement = document.createElement("option");
     optionElement.value = site;
@@ -667,19 +682,55 @@ const updateBlockedSitesDropdown = (sites) => {
   }
 };
 
-chrome.storage.sync.get(["sites", "currentUrl"], (data) => {
+// this keeps track of the blocked sites so we don't have to get it from storage each time
+var blockSitesCache;
+
+var unblockSelectedSitesButton = document.getElementById("unblockCurrent");
+
+const didClickUnblockSitesButton = () => {
+  chrome.extension.getBackgroundPage().console.log("did press button");
+  var item = document.getElementById("blockCustomSitesMultiple");
+  var sitesToUnblock = [];
+  chrome.extension.getBackgroundPage().console.log(item);
+  for (var inputChild of item.childNodes) {
+    if (inputChild.selected === true) {
+      sitesToUnblock.push(inputChild.value);
+    }
+  }
+  chrome.extension.getBackgroundPage().console.log(sitesToUnblock);
+  // TODO: cache the list of options so we don't have to re-retrieve it
+  chrome.storage.sync.get(["sites"], data => {
+    var oldSites = data["sites"];
+    var newSites = [];
+    for (var site of oldSites) {
+      if (sitesToUnblock.includes(site)) {
+        // don't add it because we don't want to keep blocking it
+      } else {
+        newSites.push(site);
+      }
+    }
+    blockSitesCache = newSites;
+    updateBlockedSitesDropdown(blockSitesCache);
+    chrome.storage.sync.set({ sites: newSites });
+  });
+};
+
+unblockSelectedSitesButton.onclick = didClickUnblockSitesButton;
+
+chrome.storage.sync.get(["sites", "currentUrl"], data => {
   chrome.extension
     .getBackgroundPage()
     .console.log("init call to storage returns: ");
   chrome.extension.getBackgroundPage().console.log(data);
-  updateBlockedSitesDropdown(data["sites"]);
+  blockSitesCache = data["sites"];
+  updateBlockedSitesDropdown(blockSitesCache);
 });
 
 // get the block button and add an onclick function to it
 var blockCurrentButton = document.getElementById("blockCurrent");
 
 blockCurrentButton.onclick = () => {
-  chrome.storage.sync.get(["currentUrl", "sites"], (data) => {
+  chrome.storage.sync.get(["currentUrl", "sites"], data => {
     var currUrl = data["currentUrl"];
     var blockedArr = data["sites"];
 
@@ -693,7 +744,8 @@ blockCurrentButton.onclick = () => {
 
     blockedArr.push(currUrl);
     blockedArr.sort();
-    updateBlockedSitesDropdown(blockedArr);
+    blockSitesCache = blockedArr;
+    updateBlockedSitesDropdown(blockSitesCache);
     chrome.storage.sync.set({ sites: blockedArr });
   });
 };
@@ -757,7 +809,7 @@ var clickAdvancedOptions = () => {
         scale: false,
         labels: false,
         width: 400,
-        set: [wordDifficultyInitVal],
+        set: [wordDifficultyInitVal]
       });
       wordDifficultySlider.onChange = () => {
         updateSettings();
@@ -794,7 +846,7 @@ var clickAdvancedOptions = () => {
           scale: false,
           labels: false,
           width: 400,
-          set: [phraseLengthInitVal1, phraseLengthInitVal2],
+          set: [phraseLengthInitVal1, phraseLengthInitVal2]
         });
         phraseLengthSlider.onChange = () => {
           updateSettings();
@@ -1083,17 +1135,17 @@ function autocomplete(query, options) {
 function getOptions(select) {
   // Select all the options available
   const all_options = Array.from(select.querySelectorAll("option")).map(
-    (el) => el.value
+    el => el.value
   );
 
   // Get the options that are selected from the user
   const options_selected = Array.from(
     select.querySelectorAll("option:checked")
-  ).map((el) => el.value);
+  ).map(el => el.value);
 
   // Create an autocomplete options array with the options that are not selected by the user
   const autocomplete_options = [];
-  all_options.forEach((option) => {
+  all_options.forEach(option => {
     if (!options_selected.includes(option)) {
       autocomplete_options.push(option);
     }
@@ -1103,7 +1155,7 @@ function getOptions(select) {
 
   return {
     options_selected,
-    autocomplete_options,
+    autocomplete_options
   };
 }
 
@@ -1170,7 +1222,7 @@ function addOption(target, val, text) {
 document.addEventListener("DOMContentLoaded", () => {
   // get select that has the options available
   const select = document.querySelectorAll("[data-multi-select-plugin]");
-  select.forEach((select) => {
+  select.forEach(select => {
     init(select);
   });
 
