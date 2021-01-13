@@ -1,8 +1,21 @@
 var translatedNodes = [];
 var translatedText = [];
 
+// sampling rate (change the 0.005)
+// phrase length (change the 3 or the 15)?
+// word difficulty (??)
+// language - modify request object and processing in backend
+
+// call walk function in the callback for storage.get
+
 function handleText(node) {
-  if (Math.random() < 0.005 && node.textContent.trim().split(" ").length > 3) {
+  var numTokens = node.textContent.trim().split(" ").length;
+  if (
+    Math.random() < samplingRateVal &&
+    numTokens >= phraseLengthVal1 &&
+    numTokens <= phraseLengthVal2
+  ) {
+    // makes sure the string isn't a bunch of junk like dates
     var numChars = node.textContent.match(/[a-zA-Z]/g).length;
     if (numChars >= 15) {
       console.log(node.textContent);
@@ -45,7 +58,50 @@ function walk(node) {
   }
 }
 
-walk(document.getRootNode());
+var filterStringToVal = {
+  low: 0.005,
+  medium: 0.01,
+  high: 0.015,
+  short: 3,
+  average: 5,
+  long: 7,
+};
+
+var samplingRateVal;
+var phraseLengthVal1;
+var phraseLengthVal2;
+chrome.storage.sync.get(
+  ["samplingRateVal", "phraseLengthVal1", "phraseLengthVal2"],
+  function (result) {
+    if (
+      typeof result.samplingRateVal === "undefined" ||
+      result.samplingRateVal == null
+    ) {
+      samplingRateVal = filterStringToVal["low"];
+    } else {
+      samplingRateVal = filterStringToVal[result.samplingRateVal];
+    }
+    if (
+      typeof result.phraseLengthVal1 === "undefined" ||
+      result.phraseLengthVal1 == null
+    ) {
+      phraseLengthVal1 = filterStringToVal["short"];
+    } else {
+      phraseLengthVal1 = filterStringToVal[result.phraseLengthVal1];
+    }
+    if (
+      typeof result.phraseLengthVal2 === "undefined" ||
+      result.phraseLengthVal2 == null
+    ) {
+      phraseLengthVal2 = filterStringToVal["long"];
+    } else {
+      phraseLengthVal2 = filterStringToVal[result.phraseLengthVal2];
+    }
+    walk(document.getRootNode());
+  }
+);
+
+// walk(document.getRootNode());
 console.log(translatedNodes);
 
 // dynamically assign different ID's to each translation
