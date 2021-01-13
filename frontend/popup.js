@@ -22,7 +22,7 @@
 
     this.values = {
       start: null,
-      end: null,
+      end: null
     };
     this.conf = {
       target: null,
@@ -35,7 +35,7 @@
       tooltip: true,
       step: null,
       disabled: false,
-      onChange: null,
+      onChange: null
     };
 
     this.cls = {
@@ -45,7 +45,7 @@
       pointer: "rs-pointer",
       scale: "rs-scale",
       noscale: "rs-noscale",
-      tip: "rs-tooltip",
+      tip: "rs-tooltip"
     };
 
     for (var i in this.conf) {
@@ -503,7 +503,7 @@ var languages = {
   Xhosa: "xh",
   Yiddish: "yi",
   Yoruba: "yo",
-  Zulu: "zu",
+  Zulu: "zu"
 };
 
 var languageDropdown = document.getElementById("languageDropdown");
@@ -558,7 +558,7 @@ chrome.storage.sync.get(["samplingRateVal"], function (result) {
     scale: false,
     labels: false,
     width: 400,
-    set: [samplingRateInitVal],
+    set: [samplingRateInitVal]
   });
   samplingRateSlider.onChange = () => {
     updateSettings();
@@ -613,7 +613,7 @@ var updateSettings = () => {
       samplingRateVal: samplingRateVal,
       // wordDifficultyVal: wordDifficultyVal,
       phraseLengthVal1: phraseLengthVal1,
-      phraseLengthVal2: phraseLengthVal2,
+      phraseLengthVal2: phraseLengthVal2
     },
     function () {
       chrome.extension.getBackgroundPage().console.log(
@@ -848,7 +848,7 @@ var clickAdvancedOptions = () => {
           scale: false,
           labels: false,
           width: 400,
-          set: [phraseLengthInitVal1, phraseLengthInitVal2],
+          set: [phraseLengthInitVal1, phraseLengthInitVal2]
         });
         phraseLengthSlider.onChange = () => {
           updateSettings();
@@ -1160,7 +1160,7 @@ function getOptions(select) {
 
   return {
     options_selected,
-    autocomplete_options,
+    autocomplete_options
   };
 }
 
