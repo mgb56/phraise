@@ -1,15 +1,13 @@
-const samplingRate = 0.005;
 var translatedNodes = [];
 var translatedText = [];
+// dynamically assign different ID's to each translation
+var translationID = 0;
 
-// sampling rate (change the 0.005)
-// phrase length (change the 3 or the 15)?
-// word difficulty (??)
-// language - modify request object and processing in backend
-
-// call walk function in the callback for storage.get
-
-function handleText(node) {
+function handleText(node, samplingRateVal, phraseLengthVal1, phraseLengthVal2) {
+  if (node == null) {
+    console.log("null");
+    return;
+  }
   var numTokens = node.textContent.trim().split(" ").length;
   if (
     Math.random() < samplingRateVal &&
@@ -17,6 +15,7 @@ function handleText(node) {
     numTokens <= phraseLengthVal2
   ) {
     // makes sure the string isn't a bunch of junk like dates
+    console.log(node.textContent);
     var numChars = node.textContent.match(/[a-zA-Z]/g).length;
     if (numChars >= 15) {
       console.log(node.textContent);
@@ -26,9 +25,9 @@ function handleText(node) {
   }
 }
 
-function walk(node) {
+function walk(node, samplingRateVal, phraseLengthVal1, phraseLengthVal2) {
   if (node.nodeType === 3) {
-    handleText(node);
+    handleText(node, samplingRateVal, phraseLengthVal1, phraseLengthVal2);
   }
   node = node.firstChild;
   while (node) {
@@ -49,10 +48,10 @@ function walk(node) {
         ) {
           // no-op
         } else {
-          walk(node);
+          walk(node, samplingRateVal, phraseLengthVal1, phraseLengthVal2);
         }
       } else {
-        walk(node);
+        walk(node, samplingRateVal, phraseLengthVal1, phraseLengthVal2);
       }
     }
     node = node.nextSibling;
@@ -63,17 +62,18 @@ var filterStringToVal = {
   low: 0.005,
   medium: 0.01,
   high: 0.015,
-  short: 3,
+  // buggy with value 1
+  short: 2,
   average: 5,
   long: 7,
 };
 
-var samplingRateVal;
-var phraseLengthVal1;
-var phraseLengthVal2;
 chrome.storage.sync.get(
   ["samplingRateVal", "phraseLengthVal1", "phraseLengthVal2"],
   function (result) {
+    var samplingRateVal;
+    var phraseLengthVal1;
+    var phraseLengthVal2;
     if (
       typeof result.samplingRateVal === "undefined" ||
       result.samplingRateVal == null
@@ -98,15 +98,19 @@ chrome.storage.sync.get(
     } else {
       phraseLengthVal2 = filterStringToVal[result.phraseLengthVal2];
     }
-    walk(document.getRootNode());
+    walk(
+      document.getRootNode(),
+      samplingRateVal,
+      phraseLengthVal1,
+      phraseLengthVal2
+    );
+    console.log(translatedNodes);
+    console.log("about to send message?");
+    chrome.runtime.sendMessage({ array: translatedText }, function (response) {
+      processTranslations(response.translatedText);
+    });
   }
 );
-
-// walk(document.getRootNode());
-console.log(translatedNodes);
-
-// dynamically assign different ID's to each translation
-var translationID = 0;
 
 // untranslated is a string, the rest of the params are nodes
 function applyStyling(
@@ -218,8 +222,3 @@ function processTranslations(translations) {
     translationID++;
   }
 }
-
-console.log("about to send message?");
-chrome.runtime.sendMessage({ array: translatedText }, function (response) {
-  processTranslations(response.translatedText);
-});

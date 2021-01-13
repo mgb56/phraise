@@ -195,10 +195,10 @@ body {
   justify-content: space-evenly;
   align-items: center;
 }
-#samplingRateLabel,
 /* #wordDifficultyLabel, */
+#samplingRateLabel,
 #phraseLengthLabel,
-#currentLanguageSection, 
+#currentLanguageSection,
 #unblockCurrent,
 #blockCurrent {
   color: white;

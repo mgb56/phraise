@@ -687,18 +687,6 @@ var blockSitesCache;
 var unblockSelectedSitesButton = document.getElementById("unblockCurrent");
 unblockSelectedSitesButton.hidden = true;
 
-const didClickTag = () => {
-  chrome.extension.getBackgroundPage().console.log("lsjfliewijfgo");
-  // unblockSelectedSitesButton.hidden = !unblockSelectedSitesButton.hidden;
-};
-
-window.onload = () => {
-  var blockMultipleSitesInnerInput = document.querySelector(".selected-input");
-  var blockMultipleSitesATag = document.querySelector(".dropdown-icon");
-  blockMultipleSitesInnerInput.onclick = didClickTag;
-  blockMultipleSitesATag.onclick = didClickTag;
-};
-
 const didClickUnblockSitesButton = () => {
   chrome.extension.getBackgroundPage().console.log("did press button");
   var item = document.getElementById("blockCustomSitesMultiple");
@@ -791,6 +779,8 @@ var clickAdvancedOptions = () => {
     phraseLengthContainer.id = "phraseLengthContainer";
     var phraseLengthLabel = document.createElement("span");
     phraseLengthLabel.innerHTML = "Phrase Length: ";
+    phraseLengthLabel.style.cssText =
+      "color: white; text-shadow: 1px 1px grey;";
     phraseLengthContainer.appendChild(phraseLengthLabel);
     phraseLengthContainer.appendChild(phraseLengthInput);
 
