@@ -319,6 +319,14 @@ body {
   color: #ecf0f1;
   width: 100%;
   height: 100%;
+  overflow-x: hidden;
+  overflow-y: visible;
+}
+
+.form-group.col-md-6.col-lg-6.col-sm-6 {
+  position: relative;
+  width: 100%;
+  height: 100%;
 }
 
 .container {
@@ -398,10 +406,7 @@ select[data-multi-select-plugin] {
   /* width: 100%; */
 }
 
-.selected-wrapper {
-  max-width: 90%;
-}
-
+.selected-wrapper,
 .selected-label {
   max-width: 90%;
 }
@@ -448,7 +453,7 @@ select[data-multi-select-plugin] {
 
 .search-container .dropdown-icon {
   display: inline-block;
-  padding: 10px 5px;
+  padding: 10px 40px 10px 5px;
   position: absolute;
   top: 5px;
   right: 5px;
@@ -463,7 +468,13 @@ select[data-multi-select-plugin] {
   background-position: center;
   background-size: 10px;
   background-repeat: no-repeat;
+  box-sizing: border-box;
 }
+
+#blockCustomSitesMultiple {
+  overflow-y: visible;
+}
+
 /* The actual drop down items */
 .search-container ul {
   position: absolute;
@@ -648,4 +659,18 @@ select[data-multi-select-plugin] {
 #unblockCurrent {
   width: 40%;
   height: 40%;
+}
+
+.dropdown-menu {
+  width: 30%;
+}
+.dropdown-menu.inner > * {
+  /* max-width: 200px; */
+  /* display: block; */
+  /* width: 100%; */
+  max-width: 30ch;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  display: block;
 }
