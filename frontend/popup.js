@@ -660,47 +660,11 @@ chrome.storage.sync.get(["currentLanguage"], function (result) {
 
 var blockMultipleSites = document.getElementById("DDLActivites");
 
-chrome.extension.getBackgroundPage().console.log(blockMultipleSites);
-
 const updateBlockedSitesDropdown = (sites) => {
-  // first remove all the current option tags
-  // while (blockMultipleSites.firstChild) {
-  //   blockMultipleSites.removeChild(blockMultipleSites.firstChild);
-  // }
-  // // now, remove all the selected tags, which all have the class of selected-wrapper
-  // // var selectedElements = document.querySelectorAll(".selected-wrapper");
-  // // for (var element of selectedElements) {
-  // //   element.remove();
-  // // }
-  // // const input_search = document.querySelector(".selected-input");
-  // // const tokens = document.querySelectorAll(".selected-wrapper");
-  // // if (!tokens.length && !(document.activeElement === input_search))
-  // //   input_search.setAttribute("placeholder", "Select sites to unblock");
-  var otherDropdownParent = document.querySelector(".dropdown-menu.inner");
-  // .dropdown-menu.inner
-  var i = 2;
   for (site of sites) {
-    var optionElement = document.createElement("option");
-    optionElement.innerHTML = site;
-    blockMultipleSites.appendChild(optionElement);
-    // add the elems for the other dropdown parent
-    var liTag = document.createElement("li");
-    // li.data-original-index = i.toString();
-    liTag.setAttribute("data-original-index", i.toString());
-    var aTag = document.createElement("a");
-    aTag.setAttribute("tabindex", i.toString());
-    aTag.setAttribute("data-tokens", "null");
-    var firstSpanTag = document.createElement("span");
-    var secondSpanTag = document.createElement("span");
-    firstSpanTag.setAttribute("class", "text");
-    firstSpanTag.innerHTML = site;
-    secondSpanTag.setAttribute("class", "glyphicon glyphicon-ok check-mark");
-    aTag.appendChild(firstSpanTag);
-    aTag.appendChild(secondSpanTag);
-    liTag.appendChild(aTag);
-    otherDropdownParent.appendChild(liTag);
-    i++;
+    $("#DDLActivites").append("<option>" + site + "</option>");
   }
+  $("#DDLActivites").selectpicker("refresh");
 };
 
 // this keeps track of the blocked sites so we don't have to get it from storage each time

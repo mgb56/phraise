@@ -664,13 +664,20 @@ select[data-multi-select-plugin] {
 .dropdown-menu {
   width: 30%;
 }
-.dropdown-menu.inner > * {
+/* .dropdown-menu.inner > * {
   /* max-width: 200px; */
-  /* display: block; */
-  /* width: 100%; */
-  max-width: 30ch;
+/* display: block; */
+/* width: 100%; */
+/* max-width: 30ch;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
   display: block;
+} */
+
+.text {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  overflow: hidden;
+  max-width: 90%;
 }
