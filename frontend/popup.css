@@ -387,12 +387,23 @@ select[data-multi-select-plugin] {
 }
 
 .selected-wrapper .selected-label {
-  max-width: 514px;
+  /* max-width: 300px; */
+
   display: inline-block;
   overflow: hidden;
   text-overflow: ellipsis;
   padding-left: 4px;
   vertical-align: top;
+  /* white-space: nowrap; */
+  /* width: 100%; */
+}
+
+.selected-wrapper {
+  max-width: 90%;
+}
+
+.selected-label {
+  max-width: 90%;
 }
 
 .selected-wrapper .selected-close {
