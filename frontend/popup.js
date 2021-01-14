@@ -660,6 +660,10 @@ chrome.storage.sync.get(["currentLanguage"], function (result) {
 
 var blockMultipleSites = document.getElementById("DDLActivites");
 
+blockMultipleSites.onchange = () => {
+  chrome.extension.getBackgroundPage().console.log(blockMultipleSites);
+};
+
 const updateBlockedSitesDropdown = (sites) => {
   for (site of sites) {
     $("#DDLActivites").append("<option>" + site + "</option>");
