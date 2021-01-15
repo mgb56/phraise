@@ -541,6 +541,8 @@ for (var lang in languages) {
 
 // only updateSettings() if slider value changes
 var settingsValsCache = {};
+
+// Create sliders
 var samplingRateSlider;
 chrome.storage.sync.get(["samplingRateVal"], function (result) {
   var samplingRateInitVal;
@@ -567,6 +569,60 @@ chrome.storage.sync.get(["samplingRateVal"], function (result) {
     updateSettings();
   };
 });
+
+var phraseLengthSlider;
+chrome.storage.sync.get(
+  ["phraseLengthVal1", "phraseLengthVal2"],
+  function (result) {
+    var phraseLengthInitVal1;
+    var phraseLengthInitVal2;
+    if (
+      typeof result.phraseLengthVal1 === "undefined" ||
+      result.phraseLengthVal1 == null
+    ) {
+      phraseLengthInitVal1 = "short";
+    } else {
+      phraseLengthInitVal1 = result.phraseLengthVal1;
+    }
+    if (
+      typeof result.phraseLengthVal2 === "undefined" ||
+      result.phraseLengthVal2 == null
+    ) {
+      phraseLengthInitVal2 = "long";
+    } else {
+      phraseLengthInitVal2 = result.phraseLengthVal2;
+    }
+
+    phraseLengthSlider = new rSlider({
+      target: "#phraseLengthSlider",
+      values: ["short", "average", "long"],
+      range: true,
+      tooltip: true,
+      scale: false,
+      labels: false,
+      width: 400,
+      set: [phraseLengthInitVal1, phraseLengthInitVal2]
+    });
+    settingsValsCache["phraseLengthVal1"] = phraseLengthInitVal1;
+    settingsValsCache["phraseLengthVal2"] = phraseLengthInitVal2;
+    phraseLengthSlider.onChange = () => {
+      updateSettings();
+    };
+    // phraseLengthSlider is invisible at first
+    var phraseLengthContainer = document.getElementById(
+      "phraseLengthContainer"
+    );
+    for (var child of phraseLengthContainer.childNodes) {
+      if (child.tagName !== "INPUT" && child.nodeName !== "#text") {
+        if (child.style.opacity === "0") {
+          child.style.opacity = "1";
+        } else {
+          child.style.opacity = "0";
+        }
+      }
+    }
+  }
+);
 
 function setLanguage() {
   // handle language setting
@@ -662,6 +718,25 @@ chrome.storage.sync.get(["currentLanguage"], function (result) {
   currentLanguageText.innerHTML = currentLanguage;
 });
 
+// Advanced Options
+var advancedOptions = document.getElementById("advancedOptions");
+var firstTime = true;
+var phraseLengthSlider;
+var clickAdvancedOptions = () => {
+  // toggle phraseLengthSlider visibility
+  var phraseLengthContainer = document.getElementById("phraseLengthContainer");
+  for (var child of phraseLengthContainer.childNodes) {
+    if (child.tagName !== "INPUT" && child.nodeName !== "#text") {
+      if (child.style.opacity === "0") {
+        child.style.opacity = "1";
+      } else {
+        child.style.opacity = "0";
+      }
+    }
+  }
+};
+advancedOptions.onclick = clickAdvancedOptions;
+
 // Blocking
 const updateBlockedSitesDropdown = (sites) => {
   $("#DDLActivites").empty();
@@ -753,90 +828,3 @@ blockCurrentButton.onclick = () => {
     chrome.storage.sync.set({ sites: blockedArr });
   });
 };
-
-// Advanced Options
-var advancedOptions = document.getElementById("advancedOptions");
-var firstTime = true;
-var phraseLengthSlider;
-var clickAdvancedOptions = () => {
-  if (firstTime) {
-    // All of this bs is to make the advanced options slides hidden by default
-    var phraseLengthInput = document.createElement("input");
-    phraseLengthInput.type = "text";
-    phraseLengthInput.id = "phraseLengthSlider";
-
-    var samplingRateContainer = document.getElementById(
-      "samplingRateContainer"
-    );
-
-    var phraseLengthContainer = document.createElement("div");
-    phraseLengthContainer.id = "phraseLengthContainer";
-    var phraseLengthLabel = document.createElement("span");
-    phraseLengthLabel.innerHTML = "Phrase Length: ";
-    phraseLengthLabel.style.cssText =
-      "color: white; text-shadow: 1px 1px grey;";
-    phraseLengthContainer.appendChild(phraseLengthLabel);
-    phraseLengthContainer.appendChild(phraseLengthInput);
-
-    samplingRateContainer.parentNode.insertBefore(
-      phraseLengthContainer,
-      samplingRateContainer.nextElementSibling
-    );
-
-    chrome.storage.sync.get(
-      ["phraseLengthVal1", "phraseLengthVal2"],
-      function (result) {
-        var phraseLengthInitVal1;
-        var phraseLengthInitVal2;
-        if (
-          typeof result.phraseLengthVal1 === "undefined" ||
-          result.phraseLengthVal1 == null
-        ) {
-          phraseLengthInitVal1 = "short";
-        } else {
-          phraseLengthInitVal1 = result.phraseLengthVal1;
-        }
-        if (
-          typeof result.phraseLengthVal2 === "undefined" ||
-          result.phraseLengthVal2 == null
-        ) {
-          phraseLengthInitVal2 = "long";
-        } else {
-          phraseLengthInitVal2 = result.phraseLengthVal2;
-        }
-
-        phraseLengthSlider = new rSlider({
-          target: "#phraseLengthSlider",
-          values: ["short", "average", "long"],
-          range: true,
-          tooltip: true,
-          scale: false,
-          labels: false,
-          width: 400,
-          set: [phraseLengthInitVal1, phraseLengthInitVal2]
-        });
-        settingsValsCache["phraseLengthVal1"] = phraseLengthInitVal1;
-        settingsValsCache["phraseLengthVal2"] = phraseLengthInitVal2;
-        phraseLengthSlider.onChange = () => {
-          updateSettings();
-        };
-      }
-    );
-    firstTime = false;
-  } else {
-    var samplingRateSliderContainer = document.querySelector(".rs-container");
-    var phraseLengthContainer =
-      samplingRateSliderContainer.parentNode.nextElementSibling;
-
-    for (var child of phraseLengthContainer.childNodes) {
-      if (child.tagName !== "INPUT") {
-        if (child.style.display === "none") {
-          child.style.display = "block";
-        } else {
-          child.style.display = "none";
-        }
-      }
-    }
-  }
-};
-advancedOptions.onclick = clickAdvancedOptions;
