@@ -58,12 +58,13 @@ body {
   -ms-user-select: none;
   user-select: none;
 }
-/* we added the margin-left here */
+/* we added the margin-left and margin-top here */
 .rs-container {
   font-family: Arial, Helvetica, sans-serif;
   height: 45px;
   position: relative;
   margin-left: 10px;
+  margin-top: 28px;
 }
 .rs-container .rs-bg,
 .rs-container .rs-selected {
@@ -134,10 +135,11 @@ body {
   float: left;
   position: relative;
 }
+/* changed the height here from 8px to 0px */
 .rs-container .rs-scale span::before {
   background-color: #ededed;
   content: "";
-  height: 8px;
+  height: 0px;
   left: 0;
   position: absolute;
   top: 10px;
@@ -271,10 +273,12 @@ body {
   display: none;
   position: absolute;
   background-color: #f6f6f6;
-  min-width: 230px;
+  /* min-width: 230px; */
+  max-width: 200px;
   overflow: auto;
   border: 1px solid #ddd;
   z-index: 1;
+  overflow-y: hidden;
 }
 
 .dropdown-content a {
@@ -296,6 +300,9 @@ body {
 /* Advanced Options Styles */
 #advancedOptions {
   display: block;
+  margin: 20px auto;
+  width: 150px;
+  height: 50px;
 }
 
 /* MARK: Multi-selection dropdown */
