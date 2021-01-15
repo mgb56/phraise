@@ -16,12 +16,12 @@
   </head>
   <body>
     <div class="tab">
-      <button class="tablinks" id="link-Paris">Settings</button>
-      <button class="tablinks" id="link-London">Block</button>
+      <button class="tablinks" id="tab-Settings">Settings</button>
+      <button class="tablinks" id="tab-Block">Block</button>
     </div>
 
     <!-- SETTINGS TAB -->
-    <div id="Paris" class="tabcontent">
+    <div id="Settings" class="tabcontent">
       <div id="samplingRateContainer">
         <span id="samplingRateLabel">Sampling Rate: </span
         ><input type="text" id="samplingRateSlider" />
@@ -30,7 +30,7 @@
         <span id="phraseLengthLabel">Phrase Length: </span
         ><input type="text" id="phraseLengthSlider" />
       </div>
-      <div class="dropdown">
+      <div class="dropdown" id="languageDropdownContainer">
         <button class="dropbtn" id="languageDropdown">Language</button>
         <div id="languageSelection" class="dropdown-content">
           <input type="text" placeholder="Search.." id="languageSearch" />
@@ -42,7 +42,7 @@
       <button id="advancedOptions">Advanced Options</button>
     </div>
     <!-- BLOCK TAB -->
-    <div id="London" class="tabcontent">
+    <div id="Block" class="tabcontent">
       <div class="allBlockFunctionality">
         <!-- <div class="checkboxAndButtonContainer"> -->
         <button id="blockCurrent" class="btn btn-primary">

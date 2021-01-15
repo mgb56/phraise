@@ -132,7 +132,7 @@
     return this.createScale();
   };
 
-  RS.prototype.createScale = function (resize) {
+  RS.prototype.createScale = function (_resize) {
     this.step = this.sliderWidth / (this.conf.values.length - 1);
 
     for (var i = 0, iLen = this.conf.values.length; i < iLen; i++) {
@@ -360,19 +360,19 @@
   window.rSlider = RS;
 })();
 
-var linkParis = document.getElementById("link-Paris");
-openCity(linkParis, "Paris"); // open city Paris so it is pre-selected
+var tabSettings = document.getElementById("tab-Settings");
+openTab(tabSettings, "Settings"); // pre-select Settings
 
-linkParis.onclick = function (element) {
-  openCity(linkParis, "Paris");
+tabSettings.onclick = function (_element) {
+  openTab(tabSettings, "Settings");
 };
 
-var linkLondon = document.getElementById("link-London");
-linkLondon.onclick = function (element) {
-  openCity(linkLondon, "London");
+var tabBlock = document.getElementById("tab-Block");
+tabBlock.onclick = function (_element) {
+  openTab(tabBlock, "Block");
 };
 
-function openCity(evt, cityName) {
+function openTab(evt, cityName) {
   // Declare all variables
   var i, tabcontent, tablinks;
 
@@ -535,6 +535,17 @@ for (var lang in languages) {
   entry.href = "#" + lang;
   languageSelection.appendChild(entry);
 }
+
+// Close dropdown if clicked outside
+document.getElementById("Settings").onclick = (e) => {
+  if (
+    languageSelection.classList.contains("show") &&
+    e.target != languageDropdown &&
+    e.target != languageSearch
+  ) {
+    languageSelection.classList.remove("show");
+  }
+};
 
 // only updateSettings() if slider value changes
 var settingsValsCache = {};

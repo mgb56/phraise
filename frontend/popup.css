@@ -288,6 +288,7 @@ body {
   background-color: #ddd;
 }
 
+/* To show/hide dropdown options */
 .show {
   display: block;
 }
@@ -534,7 +535,7 @@ select[data-multi-select-plugin] {
   overflow-y: auto;
 }
 
-#London {
+#Block {
   /* background: #00b3bc; */
   width: 100%;
   height: 100%;
