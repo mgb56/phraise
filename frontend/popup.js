@@ -597,7 +597,6 @@ var updateSettings = () => {
     return;
   }
 
-  // var wordDifficultyVal = wordDifficultySlider.getValue();
   var phraseLengthVals = phraseLengthSlider.getValue();
   var phraseLengthVal1 = phraseLengthVals.substring(
     0,
@@ -617,15 +616,15 @@ var updateSettings = () => {
     chrome.storage.sync.set(
       {
         samplingRateVal: samplingRateVal,
-        // wordDifficultyVal: wordDifficultyVal,
         phraseLengthVal1: phraseLengthVal1,
         phraseLengthVal2: phraseLengthVal2
       },
       function () {
-        chrome.extension.getBackgroundPage().console.log(
-          // `samplingRateVal set to ${samplingRateVal}, wordDifficultyVal set to ${wordDifficultyVal}, phraseLengthVal1 set to ${phraseLengthVal1}, phraseLengthVal2 set to ${phraseLengthVal2}`
-          `samplingRateVal set to ${samplingRateVal}, phraseLengthVal1 set to ${phraseLengthVal1}, phraseLengthVal2 set to ${phraseLengthVal2}`
-        );
+        chrome.extension
+          .getBackgroundPage()
+          .console.log(
+            `samplingRateVal set to ${samplingRateVal}, phraseLengthVal1 set to ${phraseLengthVal1}, phraseLengthVal2 set to ${phraseLengthVal2}`
+          );
         settingsValsCache["samplingRateVal"] = samplingRateVal;
         settingsValsCache["phraseLengthVal1"] = phraseLengthVal1;
         settingsValsCache["phraseLengthVal2"] = phraseLengthVal2;
@@ -758,14 +757,10 @@ blockCurrentButton.onclick = () => {
 // Advanced Options
 var advancedOptions = document.getElementById("advancedOptions");
 var firstTime = true;
-// var wordDifficultySlider;
 var phraseLengthSlider;
 var clickAdvancedOptions = () => {
   if (firstTime) {
     // All of this bs is to make the advanced options slides hidden by default
-    // var wordDifficultyInput = document.createElement("input");
-    // wordDifficultyInput.type = "text";
-    // wordDifficultyInput.id = "wordDifficultySlider";
     var phraseLengthInput = document.createElement("input");
     phraseLengthInput.type = "text";
     phraseLengthInput.id = "phraseLengthSlider";
@@ -773,12 +768,6 @@ var clickAdvancedOptions = () => {
     var samplingRateContainer = document.getElementById(
       "samplingRateContainer"
     );
-    // var wordDifficultyContainer = document.createElement("div");
-    // wordDifficultyContainer.id = "wordDifficultyContainer";
-    // var wordDifficultyLabel = document.createElement("span");
-    // wordDifficultyLabel.innerHTML = "Word Difficulty: ";
-    // wordDifficultyContainer.appendChild(wordDifficultyLabel);
-    // wordDifficultyContainer.appendChild(wordDifficultyInput);
 
     var phraseLengthContainer = document.createElement("div");
     phraseLengthContainer.id = "phraseLengthContainer";
@@ -793,35 +782,6 @@ var clickAdvancedOptions = () => {
       phraseLengthContainer,
       samplingRateContainer.nextElementSibling
     );
-    // samplingRateContainer.parentNode.insertBefore(
-    //   phraseLengthContainer,
-    //   wordDifficultyContainer.nextElementSibling
-    // );
-
-    // chrome.storage.sync.get(["wordDifficultyVal"], function (result) {
-    //   var wordDifficultyInitVal;
-    //   if (
-    //     typeof result.wordDifficultyVal === "undefined" ||
-    //     result.wordDifficultyVal == null
-    //   ) {
-    //     wordDifficultyInitVal = "easy";
-    //   } else {
-    //     wordDifficultyInitVal = result.wordDifficultyVal;
-    //   }
-    //   wordDifficultySlider = new rSlider({
-    //     target: "#wordDifficultySlider",
-    //     values: ["easy", "medium", "hard"],
-    //     range: false,
-    //     tooltip: true,
-    //     scale: false,
-    //     labels: false,
-    //     width: 400,
-    //     set: [wordDifficultyInitVal]
-    //   });
-    //   wordDifficultySlider.onChange = () => {
-    //     updateSettings();
-    //   };
-    // });
 
     chrome.storage.sync.get(
       ["phraseLengthVal1", "phraseLengthVal2"],
@@ -865,21 +825,9 @@ var clickAdvancedOptions = () => {
     firstTime = false;
   } else {
     var samplingRateSliderContainer = document.querySelector(".rs-container");
-    // var wordDifficultyContainer =
-    //   samplingRateSliderContainer.parentNode.nextElementSibling;
-    // var phraseLengthContainer = wordDifficultyContainer.nextElementSibling;
     var phraseLengthContainer =
       samplingRateSliderContainer.parentNode.nextElementSibling;
 
-    // for (var child of wordDifficultyContainer.childNodes) {
-    //   if (child.tagName !== "INPUT") {
-    //     if (child.style.display === "none") {
-    //       child.style.display = "block";
-    //     } else {
-    //       child.style.display = "none";
-    //     }
-    //   }
-    // }
     for (var child of phraseLengthContainer.childNodes) {
       if (child.tagName !== "INPUT") {
         if (child.style.display === "none") {
