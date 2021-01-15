@@ -44,19 +44,26 @@
     <!-- BLOCK TAB -->
     <div id="London" class="tabcontent">
       <div class="allBlockFunctionality">
-        <div class="checkboxAndButtonContainer">
-          <button id="blockCurrent">Block Current Site</button>
-        </div>
+        <!-- <div class="checkboxAndButtonContainer"> -->
+        <button id="blockCurrent" class="btn btn-primary">
+          Block Current Site
+        </button>
+        <!-- </div> -->
         <div class="unblockContainer">
           <div class="form-group col-md-6 col-lg-6 col-sm-6">
             <select
               id="DDLActivites"
               data-style="btn-default"
               class="selectpicker form-control"
+              data-live-search="true"
+              data-width="400px"
+              data-size="auto"
               multiple
             ></select>
           </div>
-          <button id="unblockCurrent">Unblock Sites</button>
+          <button id="unblockCurrent" class="btn btn-primary">
+            Unblock Sites
+          </button>
         </div>
       </div>
     </div>
