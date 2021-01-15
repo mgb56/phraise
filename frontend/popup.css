@@ -195,12 +195,13 @@ body {
   justify-content: space-evenly;
   align-items: center;
 }
-/* #wordDifficultyLabel, */
+
 #samplingRateLabel,
 #phraseLengthLabel,
 #currentLanguageSection,
 #unblockCurrent,
-#blockCurrent {
+#blockCurrent,
+#advancedOptions {
   color: white;
   text-shadow: 1px 1px grey;
 }
@@ -208,7 +209,8 @@ body {
 /* MARK: buttons on block page */
 #unblockCurrent,
 #blockCurrent,
-#languageDropdown {
+#languageDropdown,
+#advancedOptions {
   background: darkgreen;
   border-radius: 10px;
   /* outline: none; */
@@ -218,7 +220,8 @@ body {
 
 #unblockCurrent:hover,
 #blockCurrent:hover,
-#languageDropdown:hover {
+#languageDropdown:hover,
+#advancedOptions:hover {
   background: green;
   cursor: pointer;
 }

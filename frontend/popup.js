@@ -528,9 +528,6 @@ languageSearch.onkeyup = () => {
   }
 };
 
-// used to check if a language was selected in settings save
-var languageSearchInitPlaceholder = languageSearch.placeholder;
-
 var languageSelection = document.getElementById("languageSelection");
 for (var lang in languages) {
   var entry = document.createElement("a");
@@ -624,18 +621,14 @@ chrome.storage.sync.get(
   }
 );
 
-function setLanguage() {
-  // handle language setting
-  var selectedLanguage = languageSearch.placeholder;
-  if (selectedLanguage !== languageSearchInitPlaceholder) {
-    chrome.storage.sync.set({ currentLanguage: selectedLanguage }, function () {
-      chrome.extension
-        .getBackgroundPage()
-        .console.log("selectedLanguage is set to " + selectedLanguage);
-    });
-    var currentLanguageText = document.getElementById("currentLanguageText");
-    currentLanguageText.innerHTML = selectedLanguage;
-  }
+function setLanguage(text) {
+  chrome.storage.sync.set({ currentLanguage: text }, function () {
+    chrome.extension
+      .getBackgroundPage()
+      .console.log("selectedLanguage is set to " + text);
+  });
+  var currentLanguageText = document.getElementById("currentLanguageText");
+  currentLanguageText.innerHTML = text;
 }
 
 // Save Settings
@@ -686,16 +679,20 @@ var updateSettings = () => {
         settingsValsCache["phraseLengthVal2"] = phraseLengthVal2;
       }
     );
-  setLanguage();
 };
 
 var languageEntries = document.querySelectorAll("#languageSelection > a");
 for (var entry of languageEntries) {
   entry.onclick = (function (text) {
     return function () {
-      languageSearch.placeholder = text;
+      setLanguage(text);
       languageSelection.classList.toggle("show");
-      updateSettings();
+      // reset input placeholder and show all options
+      languageSearch.value = "";
+      var a = languageSelection.getElementsByTagName("a");
+      for (i = 0; i < a.length; i++) {
+        a[i].style.display = "";
+      }
     };
   })(entry.innerHTML);
 }
