@@ -678,6 +678,5 @@ select[data-multi-select-plugin] {
 .text {
   text-overflow: ellipsis;
   overflow: hidden;
-  overflow: hidden;
   max-width: 90%;
 }
