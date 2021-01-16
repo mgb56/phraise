@@ -632,14 +632,14 @@ chrome.storage.sync.get(
   }
 );
 
-function setLanguage(text) {
-  chrome.storage.sync.set({ currentLanguage: text }, function () {
+function setLanguage(lang) {
+  chrome.storage.sync.set({ currentLanguage: languages[lang] }, function () {
     chrome.extension
       .getBackgroundPage()
-      .console.log("selectedLanguage is set to " + text);
+      .console.log("selectedLanguage is set to " + lang);
   });
   var currentLanguageText = document.getElementById("currentLanguageText");
-  currentLanguageText.innerHTML = text;
+  currentLanguageText.innerHTML = lang;
 }
 
 // Save Settings
@@ -694,9 +694,9 @@ var updateSettings = () => {
 
 var languageEntries = document.querySelectorAll("#languageSelection > a");
 for (var entry of languageEntries) {
-  entry.onclick = (function (text) {
+  entry.onclick = (function (lang) {
     return function () {
-      setLanguage(text);
+      setLanguage(lang);
       languageSelection.classList.toggle("show");
       // reset input placeholder and show all options
       languageSearch.value = "";
@@ -720,7 +720,9 @@ chrome.storage.sync.get(["currentLanguage"], function (result) {
     currentLanguage = "Spanish";
   } else {
     chrome.extension.getBackgroundPage().console.log("currentLanguage found");
-    currentLanguage = result.currentLanguage;
+    currentLanguage = Object.keys(languages).find(
+      (key) => languages[key] === result.currentLanguage
+    );
   }
   var currentLanguageText = document.getElementById("currentLanguageText");
   currentLanguageText.innerHTML = currentLanguage;

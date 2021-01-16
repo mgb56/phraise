@@ -15,32 +15,28 @@ dictionary = set(nltk.corpus.words.words())
 @app.route('/', methods=['POST'])
 def hello_world():
     json_req = request.get_json()
+    sentences = json_req['array']
+    language = json_req['language']
 
     json_to_translate = []
     bad_indices = set()
-    for i, sentence in enumerate(json_req):
+    for i, sentence in enumerate(sentences):
         if real_words_percentage(sentence, dictionary) > 0.5:
             json_to_translate.append(sentence)
         else:
             bad_indices.add(i)
     
     translator = PartialTranslator(json_to_translate, is_mock=False, try_free=True)
-    translations = translator.translate(src_lang='en', target_lang='es', left_trim=2, right_trim=2)
+    translations = translator.translate(src_lang='en', target_lang=language, left_trim=2, right_trim=2)
 
     res = []
     j = 0
-    for i in range(len(json_req)):
+    for i in range(len(sentences)):
         if i in bad_indices:
             res.append(['', '', '', ''])
         else:
             res.append(translations[j])
             j += 1
-
-
-    #json_req = request.get_json()
-    #json_req = [sentence if real_words_percentage(sentence, dictionary) > 0.5 else '' for sentence in json_req]
-    #translator = PartialTranslator(json_req, is_mock=False, try_free=True)
-    #res = translator.translate(src_lang='en', target_lang='es', left_trim=2, right_trim=2)
 
     response = Response(
         response=json.dumps(res),
