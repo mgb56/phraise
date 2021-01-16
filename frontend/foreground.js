@@ -4,10 +4,6 @@ var translatedText = [];
 var translationID = 0;
 
 function handleText(node, samplingRateVal, phraseLengthVal1, phraseLengthVal2) {
-  if (node == null) {
-    console.log("null");
-    return;
-  }
   var numTokens = node.textContent.trim().split(" ").length;
   if (
     Math.random() < samplingRateVal &&
@@ -69,11 +65,17 @@ var filterStringToVal = {
 };
 
 chrome.storage.sync.get(
-  ["samplingRateVal", "phraseLengthVal1", "phraseLengthVal2"],
+  [
+    "samplingRateVal",
+    "phraseLengthVal1",
+    "phraseLengthVal2",
+    "currentLanguage"
+  ],
   function (result) {
     var samplingRateVal;
     var phraseLengthVal1;
     var phraseLengthVal2;
+    var currentLanguage;
     if (
       typeof result.samplingRateVal === "undefined" ||
       result.samplingRateVal == null
@@ -98,6 +100,14 @@ chrome.storage.sync.get(
     } else {
       phraseLengthVal2 = filterStringToVal[result.phraseLengthVal2];
     }
+    if (
+      typeof result.currentLanguage === "undefined" ||
+      result.currentLanguage == null
+    ) {
+      currentLanguage = "es";
+    } else {
+      currentLanguage = result.currentLanguage;
+    }
     walk(
       document.getRootNode(),
       samplingRateVal,
@@ -106,9 +116,12 @@ chrome.storage.sync.get(
     );
     console.log(translatedNodes);
     console.log("about to send message?");
-    chrome.runtime.sendMessage({ array: translatedText }, function (response) {
-      processTranslations(response.translatedText);
-    });
+    chrome.runtime.sendMessage(
+      { array: translatedText, language: currentLanguage },
+      function (response) {
+        processTranslations(response.translatedText);
+      }
+    );
   }
 );
 

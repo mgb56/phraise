@@ -43,13 +43,12 @@ chrome.tabs.onActivated.addListener((tab) => {
   });
 });
 
-chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+chrome.runtime.onMessage.addListener(function (request, _sender, sendResponse) {
   fetch("http://0.0.0.0:33507/", {
     method: "POST",
-    body: JSON.stringify(request.array),
+    body: JSON.stringify(request),
     headers: { "Content-type": "application/json; charset=UTF-8" }
   })
-    // .then((response) => console.log(response))
     .then((response) => response.json())
     .then((jsonResponse) => {
       console.log(jsonResponse);
