@@ -69,12 +69,9 @@ chrome.storage.sync.get(
     "samplingRateVal",
     "phraseLengthVal1",
     "phraseLengthVal2",
-<<<<<<< HEAD
     "currentUrl",
-    "sites"
-=======
+    "sites",
     "currentLanguage"
->>>>>>> d43f5055780a53e25e43564a9e7d31df66aa1046
   ],
   function (result) {
     var samplingRateVal;
