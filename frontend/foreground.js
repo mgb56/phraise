@@ -69,7 +69,13 @@ var filterStringToVal = {
 };
 
 chrome.storage.sync.get(
-  ["samplingRateVal", "phraseLengthVal1", "phraseLengthVal2"],
+  [
+    "samplingRateVal",
+    "phraseLengthVal1",
+    "phraseLengthVal2",
+    "currentUrl",
+    "sites"
+  ],
   function (result) {
     var samplingRateVal;
     var phraseLengthVal1;
@@ -98,6 +104,12 @@ chrome.storage.sync.get(
     } else {
       phraseLengthVal2 = filterStringToVal[result.phraseLengthVal2];
     }
+    var currUrl = result.currentUrl;
+    var blockedSites = result.sites;
+    if (blockedSites && blockedSites.includes(currUrl)) {
+      return;
+    }
+
     walk(
       document.getRootNode(),
       samplingRateVal,
