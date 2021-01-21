@@ -30,34 +30,46 @@
         <span id="phraseLengthLabel">Phrase Length: </span
         ><input type="text" id="phraseLengthSlider" />
       </div>
-      <div class="dropdown" id="languageDropdownContainer">
-        <button class="dropbtn" id="languageDropdown">Language</button>
-        <div id="languageSelection" class="dropdown-content">
-          <input type="text" placeholder="Search.." id="languageSearch" />
-        </div>
+      <div id="languageDropdownContainer">
         <span id="currentLanguageSection"
           >Current Language: <span id="currentLanguageText"></span
         ></span>
+        <div
+          class="form-group col-md-6 col-lg-6 col-sm-6"
+          id="language-form-group"
+        >
+          <select
+            id="languageDropdown"
+            data-style="btn-default"
+            class="selectpicker form-control show-tick"
+            data-live-search="true"
+            data-width="300px"
+            data-size="auto"
+            data-dropup-auto="false"
+            title="Change Language"
+          ></select>
+        </div>
       </div>
       <button id="advancedOptions">Advanced Options</button>
     </div>
     <!-- BLOCK TAB -->
     <div id="Block" class="tabcontent">
       <div class="allBlockFunctionality">
-        <!-- <div class="checkboxAndButtonContainer"> -->
         <button id="blockCurrent" class="btn btn-primary">
           Block Current Site
         </button>
-        <!-- </div> -->
         <div class="unblockContainer">
           <div class="form-group col-md-6 col-lg-6 col-sm-6">
             <select
-              id="DDLActivites"
+              id="blockedSitesDropdown"
               data-style="btn-default"
               class="selectpicker form-control"
               data-live-search="true"
               data-width="400px"
               data-size="auto"
+              data-dropup-auto="false"
+              data-selected-text-format="count > 2"
+              title="Unblock Sites"
               multiple
             ></select>
           </div>
