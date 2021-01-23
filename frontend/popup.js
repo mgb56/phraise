@@ -507,45 +507,28 @@ var languages = {
 };
 
 var languageDropdown = document.getElementById("languageDropdown");
-languageDropdown.onclick = () => {
-  document.getElementById("languageSelection").classList.toggle("show");
-};
-
-var languageSearch = document.getElementById("languageSearch");
-languageSearch.onkeyup = () => {
-  var input, filter, a, i;
-  input = document.getElementById("languageSearch");
-  filter = input.value.toUpperCase();
-  div = document.getElementById("languageSelection");
-  a = div.getElementsByTagName("a");
-  for (i = 0; i < a.length; i++) {
-    txtValue = a[i].textContent || a[i].innerText;
-    if (txtValue.toUpperCase().indexOf(filter) > -1) {
-      a[i].style.display = "";
-    } else {
-      a[i].style.display = "none";
-    }
-  }
-};
-
-var languageSelection = document.getElementById("languageSelection");
 for (var lang in languages) {
-  var entry = document.createElement("a");
-  entry.innerHTML = lang;
-  entry.href = "#" + lang;
-  languageSelection.appendChild(entry);
+  var langEntry = document.createElement("option");
+  langEntry.innerHTML = lang;
+  languageDropdown.append(langEntry);
 }
 
-// Close dropdown if clicked outside
-document.getElementById("Settings").onclick = (e) => {
-  if (
-    languageSelection.classList.contains("show") &&
-    e.target != languageDropdown &&
-    e.target != languageSearch
-  ) {
-    languageSelection.classList.remove("show");
+languageDropdown.onchange = () => {
+  var selectedLanguage = $("#languageDropdown").val();
+  if (selectedLanguage) {
+    setLanguage(selectedLanguage);
   }
 };
+
+function setLanguage(lang) {
+  chrome.storage.sync.set({ currentLanguage: languages[lang] }, function () {
+    chrome.extension
+      .getBackgroundPage()
+      .console.log("selectedLanguage is set to " + lang);
+  });
+  var currentLanguageText = document.getElementById("currentLanguageText");
+  currentLanguageText.innerHTML = lang;
+}
 
 // only updateSettings() if slider value changes
 var settingsValsCache = {};
@@ -632,16 +615,6 @@ chrome.storage.sync.get(
   }
 );
 
-function setLanguage(lang) {
-  chrome.storage.sync.set({ currentLanguage: languages[lang] }, function () {
-    chrome.extension
-      .getBackgroundPage()
-      .console.log("selectedLanguage is set to " + lang);
-  });
-  var currentLanguageText = document.getElementById("currentLanguageText");
-  currentLanguageText.innerHTML = lang;
-}
-
 // Save Settings
 var updateSettings = () => {
   var samplingRateVal = samplingRateSlider.getValue();
@@ -692,22 +665,6 @@ var updateSettings = () => {
     );
 };
 
-var languageEntries = document.querySelectorAll("#languageSelection > a");
-for (var entry of languageEntries) {
-  entry.onclick = (function (lang) {
-    return function () {
-      setLanguage(lang);
-      languageSelection.classList.toggle("show");
-      // reset input placeholder and show all options
-      languageSearch.value = "";
-      var a = languageSelection.getElementsByTagName("a");
-      for (i = 0; i < a.length; i++) {
-        a[i].style.display = "";
-      }
-    };
-  })(entry.innerHTML);
-}
-
 chrome.storage.sync.get(["currentLanguage"], function (result) {
   var currentLanguage;
   if (
@@ -749,11 +706,11 @@ advancedOptions.onclick = clickAdvancedOptions;
 
 // Blocking
 const updateBlockedSitesDropdown = (sites) => {
-  $("#DDLActivites").empty();
+  $("#blockedSitesDropdown").empty();
   for (site of sites) {
-    $("#DDLActivites").append("<option>" + site + "</option>");
+    $("#blockedSitesDropdown").append("<option>" + site + "</option>");
   }
-  $("#DDLActivites").selectpicker("refresh");
+  $("#blockedSitesDropdown").selectpicker("refresh");
 };
 
 // this keeps track of the blocked sites so we don't have to get it from storage each time
@@ -762,11 +719,11 @@ var blockSitesCache;
 var unblockSelectedSitesButton = document.getElementById("unblockCurrent");
 unblockSelectedSitesButton.style.visibility = "hidden";
 
-var blockMultipleSites = document.getElementById("DDLActivites");
+var blockMultipleSites = document.getElementById("blockedSitesDropdown");
 
 blockMultipleSites.onchange = () => {
   chrome.extension.getBackgroundPage().console.log(blockMultipleSites);
-  var selectedItem = $(".selectpicker").val();
+  var selectedItem = $("#blockedSitesDropdown").val();
   if (selectedItem && selectedItem.length > 0) {
     unblockSelectedSitesButton.style.visibility = "visible";
   } else {
@@ -778,7 +735,7 @@ blockMultipleSites.onchange = () => {
 
 const didClickUnblockSitesButton = () => {
   chrome.extension.getBackgroundPage().console.log("did press button");
-  var item = document.getElementById("DDLActivites");
+  var item = document.getElementById("blockedSitesDropdown");
   var sitesToUnblock = [];
   chrome.extension.getBackgroundPage().console.log(item);
   for (var inputChild of item.childNodes) {
