@@ -1,3 +1,20 @@
+// import { translate } from "./node_modules/@iamtraction/google-translate/src/index";
+// console.log(translate);
+// translate("Thank you", { from: "en", to: "fr" })
+//   .then((res) => {
+//     console.log(res.text); // OUTPUT: Je vous remercie
+//     console.log(res.from.autoCorrected); // OUTPUT: true
+//     console.log(res.from.text.value); // OUTPUT: [Thank] you
+//     console.log(res.from.text.didYouMean); // OUTPUT: false
+//   })
+//   .catch((err) => {
+//     console.error(err);
+//   });
+
+var doc = nlp("London is calling");
+var x = doc.verbs().toNegative();
+console.log(doc.text());
+
 chrome.runtime.onInstalled.addListener(function () {
   chrome.storage.sync.set({ color: "#3aa757" }, function () {
     console.log("The color is green.");
