@@ -6,7 +6,7 @@ module.exports = {
   resolve: {
     alias: {
       // vm: require.resolve("vm-browserify"),
-      // querystring: require.resolve("querystring-es3")
+      // querystring: require.resolve("querystring-es3"),
       // path: require.resolve("path-browserify"),
       os: require.resolve("os-browserify/browser"),
       querystring: require.resolve("querystring-es3"),
@@ -16,10 +16,10 @@ module.exports = {
       buffer: require.resolve("buffer/"),
       http: require.resolve("stream-http"),
       https: require.resolve("https-browserify"),
-      // // crypto: require.resolve("crypto-browserify"),
+      // crypto: require.resolve("crypto-browserify"),
       assert: require.resolve("assert/"),
-      // // constants: require.resolve("constants-browserify"),
-      // // fs: require.resolve("write-file-atomic"),
+      // constants: require.resolve("constants-browserify"),
+      // fs: require.resolve("write-file-atomic"),
       tls: require.resolve("resolve-alpn"),
       net: require.resolve("http2-wrapper/"),
       http2: require.resolve("http2-wrapper/"),
