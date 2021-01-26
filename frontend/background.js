@@ -47,12 +47,14 @@ async function translate_phrase(
   after_context,
   language
 ) {
-  const delimiter = " ALFSKJLKASF ";
+  // const delimiter = " ALFSKJLKASF ";
+  const spanOpen = " <span> ";
+  const spanClose = " </span> ";
   let full_sentence =
     before_context +
-    delimiter +
+    spanOpen +
     phrase_to_be_translated +
-    delimiter +
+    spanClose +
     after_context;
   let translationObj = await translate(full_sentence, {
     from: "en",
@@ -60,8 +62,8 @@ async function translate_phrase(
   });
   let translationString = translationObj["text"];
 
-  const left_index = translationString.indexOf("ALFS");
-  const right_index = translationString.lastIndexOf("ALFS");
+  const left_index = translationString.indexOf(spanOpen);
+  const right_index = translationString.lastIndexOf(spanClose);
 
   var final_left_index = left_index;
   var final_right_index = right_index;
@@ -84,8 +86,17 @@ async function translate_phrase(
   return [before_context, result, after_context, phrase_to_be_translated];
 }
 
-async function partially_translate(sentence, language) {
-  var split_sentence = naive_split(sentence, 10, 50);
+async function partially_translate(
+  sentence,
+  language,
+  phraseLengthVal1,
+  phraseLengthVal2
+) {
+  var split_sentence = naive_split(
+    sentence,
+    phraseLengthVal1,
+    phraseLengthVal2
+  );
   var translated_sentence = await translate_phrase(
     split_sentence[0],
     split_sentence[1],
@@ -95,10 +106,20 @@ async function partially_translate(sentence, language) {
   return translated_sentence;
 }
 
-async function partially_translate_sentences(sentences, language) {
+async function partially_translate_sentences(
+  sentences,
+  language,
+  phraseLengthVal1,
+  phraseLengthVal2
+) {
   var result = [];
   for (var sentence of sentences) {
-    var translated_sentence = await partially_translate(sentence, language);
+    var translated_sentence = await partially_translate(
+      sentence,
+      language,
+      phraseLengthVal1,
+      phraseLengthVal2
+    );
     result.push(translated_sentence);
   }
   // var jsonResult = await result.json();
@@ -177,8 +198,15 @@ chrome.tabs.onActivated.addListener((tab) => {
 chrome.runtime.onMessage.addListener(function (request, _sender, sendResponse) {
   let sentenceArray = request["array"];
   let targetLanguage = request["language"];
+  let phraseLengthVal1 = request["phraseLengthVal1"];
+  let phraseLengthVal2 = request["phraseLengthVal2"];
 
-  partially_translate_sentences(sentenceArray, targetLanguage).then((res) => {
+  partially_translate_sentences(
+    sentenceArray,
+    targetLanguage,
+    phraseLengthVal1,
+    phraseLengthVal2
+  ).then((res) => {
     sendResponse({ translatedText: res });
   });
 

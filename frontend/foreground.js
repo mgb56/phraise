@@ -3,13 +3,9 @@ var translatedText = [];
 // dynamically assign different ID's to each translation
 var translationID = 0;
 
-function handleText(node, samplingRateVal, phraseLengthVal1, phraseLengthVal2) {
+function handleText(node, samplingRateVal) {
   var numTokens = node.textContent.trim().split(" ").length;
-  if (
-    Math.random() < samplingRateVal &&
-    numTokens >= phraseLengthVal1 &&
-    numTokens <= phraseLengthVal2
-  ) {
+  if (Math.random() < samplingRateVal && numTokens > 7) {
     // makes sure the string isn't a bunch of junk like dates
     console.log(node.textContent);
     var numChars = node.textContent.match(/[a-zA-Z]/g).length;
@@ -59,9 +55,9 @@ var filterStringToVal = {
   medium: 0.01,
   high: 0.015,
   // buggy with value 1
-  short: 2,
-  average: 5,
-  long: 7
+  short: 10,
+  average: 25,
+  long: 50
 };
 
 chrome.storage.sync.get(
@@ -125,7 +121,12 @@ chrome.storage.sync.get(
     console.log(translatedNodes);
     console.log("about to send message?");
     chrome.runtime.sendMessage(
-      { array: translatedText, language: currentLanguage },
+      {
+        array: translatedText,
+        language: currentLanguage,
+        phraseLengthVal1: phraseLengthVal1,
+        phraseLengthVal2: phraseLengthVal2
+      },
       function (response) {
         processTranslations(response.translatedText);
       }
