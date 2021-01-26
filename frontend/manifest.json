@@ -10,7 +10,7 @@
     "declarativeContent"
   ],
   "background": {
-    "scripts": ["background.js"],
+    "page": "background.html",
     "persistent": false
   },
   "browser_action": {
@@ -30,5 +30,8 @@
   },
   "options_page": "options.html",
   "manifest_version": 2,
-  "content_security_policy": "script-src 'self' https://ajax.googleapis.com https://maxcdn.bootstrapcdn.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; object-src 'self'"
+  "content_security_policy": "script-src 'self' https://ajax.googleapis.com https://maxcdn.bootstrapcdn.com https://cdnjs.cloudflare.com https://unpkg.com/ https://bundle.run/ https://cdn.jsdelivr.net/; object-src 'self'",
+  "web_accessible_resources": [
+    "/node_modules/google-translate-open-api/dist/index.js"
+  ]
 }

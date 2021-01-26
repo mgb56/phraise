@@ -774,9 +774,21 @@ chrome.storage.sync.get(["sites", "currentUrl"], (data) => {
 
 // get the block button and add an onclick function to it
 var blockCurrentButton = document.getElementById("blockCurrent");
+var currButtonAlert = document.getElementById("blockCurrentButtonAlert");
+currButtonAlert.style.visibility = "hidden";
 
 blockCurrentButton.onclick = () => {
   chrome.storage.sync.get(["currentUrl", "sites"], (data) => {
+    var currButtonAlert = document.getElementById("blockCurrentButtonAlert");
+    currButtonAlert.style.visibility = "visible";
+    currButtonAlert.hidden = false;
+    window.setTimeout(function () {
+      $("#blockCurrentButtonAlert")
+        .fadeTo(500, 0)
+        .slideUp(500, function () {
+          $(this).remove();
+        });
+    }, 2000);
     var currUrl = data["currentUrl"];
     var blockedArr = data["sites"];
 
