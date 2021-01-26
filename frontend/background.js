@@ -209,15 +209,32 @@ chrome.runtime.onMessage.addListener(function (request, _sender, sendResponse) {
   let targetLanguage = request["language"];
   let phraseLengthVal1 = request["phraseLengthVal1"];
   let phraseLengthVal2 = request["phraseLengthVal2"];
+  let isMock = request["isMock"];
 
-  partially_translate_sentences(
-    sentenceArray,
-    targetLanguage,
-    phraseLengthVal1,
-    phraseLengthVal2
-  ).then((res) => {
-    sendResponse({ translatedText: res });
-  });
+  const mockResponse = [
+    [
+      "this is",
+      "un sentencio ejemplo",
+      "to use as a mock",
+      "an example sentence"
+    ]
+  ];
+
+  if (isMock) {
+    sendResponse({
+      translatedText: mockResponse
+    });
+  } else {
+    partially_translate_sentences(
+      sentenceArray,
+      targetLanguage,
+      phraseLengthVal1,
+      phraseLengthVal2
+    ).then((res) => {
+      console.log(res);
+      sendResponse({ translatedText: res });
+    });
+  }
 
   // fetch("http://0.0.0.0:33507/", {
   //   method: "POST",

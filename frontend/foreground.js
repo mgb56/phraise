@@ -125,7 +125,8 @@ chrome.storage.sync.get(
         array: translatedText,
         language: currentLanguage,
         phraseLengthVal1: phraseLengthVal1,
-        phraseLengthVal2: phraseLengthVal2
+        phraseLengthVal2: phraseLengthVal2,
+        isMock: true
       },
       function (response) {
         processTranslations(response.translatedText);
