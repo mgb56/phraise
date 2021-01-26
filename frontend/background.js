@@ -44,7 +44,7 @@ chrome.tabs.onActivated.addListener((tab) => {
 });
 
 chrome.runtime.onMessage.addListener(function (request, _sender, sendResponse) {
-  fetch("http://0.0.0.0:33507/", {
+  fetch("https://phraise.uc.r.appspot.com", {
     method: "POST",
     body: JSON.stringify(request),
     headers: { "Content-type": "application/json; charset=UTF-8" }
