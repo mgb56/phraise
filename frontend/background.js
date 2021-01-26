@@ -9,17 +9,23 @@
 //     console.error(err);
 //   });
 
+var testSentence =
+  "this is a test sentence to see how the spacing works in clauses";
+var testDoc = nlp(testSentence);
+var testClauses = testDoc.clauses().out("array");
+console.log(testClauses);
+
 const translate = require("@iamtraction/google-translate");
 
 function transform_clause_into_quartuple(clauses, i) {
   var before_context = "";
   for (var j = 0; j < i; j++) {
-    before_context += clauses[j];
+    before_context += clauses[j] + " ";
   }
   var phrase_to_be_translated = clauses[j];
   var after_context = "";
   for (var j = i + 1; j < clauses.length; j++) {
-    after_context += clauses[j];
+    after_context += " " + clauses[j];
   }
   return [before_context, phrase_to_be_translated, after_context];
 }
@@ -62,8 +68,8 @@ async function translate_phrase(
   });
   let translationString = translationObj["text"];
 
-  const left_index = translationString.indexOf(spanOpen);
-  const right_index = translationString.lastIndexOf(spanClose);
+  const left_index = translationString.indexOf("<span>");
+  const right_index = translationString.lastIndexOf("</span>");
 
   var final_left_index = left_index;
   var final_right_index = right_index;
@@ -83,6 +89,9 @@ async function translate_phrase(
   }
 
   var result = translationString.slice(final_left_index, final_right_index + 1);
+  if (before_context.length === 0) {
+    result = " " + result;
+  }
   return [before_context, result, after_context, phrase_to_be_translated];
 }
 
