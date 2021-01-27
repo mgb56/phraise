@@ -757,6 +757,7 @@ const didClickUnblockSitesButton = () => {
     }
     blockSitesCache = newSites;
     updateBlockedSitesDropdown(blockSitesCache);
+    unblockSelectedSitesButton.style.visibility = "hidden";
     chrome.storage.sync.set({ sites: newSites });
   });
 };
@@ -780,14 +781,23 @@ currButtonAlert.style.visibility = "hidden";
 blockCurrentButton.onclick = () => {
   chrome.storage.sync.get(["currentUrl", "sites"], (data) => {
     var currButtonAlert = document.getElementById("blockCurrentButtonAlert");
+    // currButtonAlert.style.visibility = "visible";
+    // currButtonAlert.hidden = false;
+    chrome.extension
+      .getBackgroundPage()
+      .console.log("about to show the alert: ");
+    // $("#blockCurrentButtonAlert").show();
     currButtonAlert.style.visibility = "visible";
-    currButtonAlert.hidden = false;
     window.setTimeout(function () {
-      $("#blockCurrentButtonAlert")
-        .fadeTo(500, 0)
-        .slideUp(500, function () {
-          $(this).remove();
-        });
+      currButtonAlert.style.visibility = "hidden";
+      // $("#blockCurrentButtonAlert").hide();
+      // $(this).hide();
+      // .fadeTo(500, 0)
+      // .slideUp(500, function () {
+      //   $(this).hide();
+      //   $(this).fadeTo(0, 500);
+      //   $(this).slideUp(-500);
+      // });
     }, 2000);
     var currUrl = data["currentUrl"];
     var blockedArr = data["sites"];
