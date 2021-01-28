@@ -54,7 +54,6 @@ var filterStringToVal = {
   low: 0.005,
   medium: 0.01,
   high: 0.015,
-  // buggy with value 1
   short: 10,
   average: 25,
   long: 50
@@ -126,7 +125,7 @@ chrome.storage.sync.get(
         language: currentLanguage,
         phraseLengthVal1: phraseLengthVal1,
         phraseLengthVal2: phraseLengthVal2,
-        isMock: true
+        isMock: false
       },
       function (response) {
         processTranslations(response.translatedText);
