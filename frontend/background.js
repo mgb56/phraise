@@ -1,14 +1,3 @@
-// import { translate } from "./node_modules/@iamtraction/google-translate/src/index";
-// console.log(translate);
-
-// translate("Thank you very much", { from: "en", to: "ru" })
-//   .then((res) => {
-//     console.log(res.text); // OUTPUT: Je vous remercie
-//   })
-//   .catch((err) => {
-//     console.error(err);
-//   });
-
 var testSentence =
   "this is a test sentence to see how the spacing works in clauses";
 var testDoc = nlp(testSentence);
@@ -131,33 +120,8 @@ async function partially_translate_sentences(
     );
     result.push(translated_sentence);
   }
-  // var jsonResult = await result.json();
   return result;
 }
-
-// translate_phrase("", "leave", "through the door please").then((res) =>
-//   console.log(res)
-// );
-
-// var s = [
-//   "the big red dog went for a walk this morning, and I guess I'm okay with that",
-//   "this is a second sentence to test the API"
-// ];
-
-// partially_translate_sentences(s).then((res) => console.log(res));
-
-// var res2 = naive_split(s, 10, 40);
-// console.log("and the result is");
-// console.log(res2);
-
-// var doc = nlp("London is calling");
-// var x = doc.verbs().toNegative();
-// console.log(doc.text());
-
-// var socket = io.connect("http://localhost:3002");
-// socket.on("connect", function () {
-//   console.log("Client connected");
-// });
 
 chrome.runtime.onInstalled.addListener(function () {
   chrome.storage.sync.set({ color: "#3aa757" }, function () {
@@ -178,13 +142,8 @@ chrome.runtime.onInstalled.addListener(function () {
   });
 });
 
-// added by me
-let active_tab_id = 0;
-
-chrome.tabs.onActivated.addListener((tab) => {
+chrome.webNavigation.onCompleted.addListener((tab) => {
   chrome.tabs.get(tab.tabId, (current_tab_info) => {
-    active_tab_id = tab.tabId;
-
     let url = current_tab_info.url;
 
     chrome.storage.sync.set({ currentUrl: url }, () => {
@@ -196,7 +155,6 @@ chrome.tabs.onActivated.addListener((tab) => {
     var regex = new RegExp(expression);
 
     if (url && url.match(regex)) {
-      //chrome.tabs.insertCSS(null, { file: './mystyles.css' });
       chrome.tabs.executeScript(null, { file: "./foreground.js" }, () =>
         console.log("i injected")
       );
@@ -235,17 +193,5 @@ chrome.runtime.onMessage.addListener(function (request, _sender, sendResponse) {
       sendResponse({ translatedText: res });
     });
   }
-
-  // fetch("http://0.0.0.0:33507/", {
-  //   method: "POST",
-  //   body: JSON.stringify(request),
-  //   headers: { "Content-type": "application/json; charset=UTF-8" }
-  // })
-  //   .then((response) => response.json())
-  //   .then((jsonResponse) => {
-  //     console.log(jsonResponse);
-  //     sendResponse({ translatedText: jsonResponse });
-  //   })
-  //   .catch((err) => console.log(err));
   return true; // to prevent message port from being closed
 });
