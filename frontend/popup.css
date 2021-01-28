@@ -227,11 +227,9 @@ body {
 
 /* Advanced Options Styles */
 #advancedOptions {
-  /* display: block;
-  margin: 20px auto; */
-  /* float: right; */
   width: 150px;
   height: 50px;
+  margin-left: 20%;
 }
 
 /* MARK: Multi-selection dropdown */
@@ -310,3 +308,7 @@ body {
   width: 100%;
   height: 14%;
 }
+
+/* #language-form-group {
+  width: 30%;
+} */
