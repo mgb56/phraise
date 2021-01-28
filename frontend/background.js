@@ -20,16 +20,26 @@
 // console.log(testClauses[0].text());
 
 const translate = require("@iamtraction/google-translate");
-
-function convertClauseToString(clause) {
+// pos=1 -> before_context; pos=2 -> phrase_to_be_translated; pos=3 -> after_context
+function convertClauseToString(clause, pos) {
   var finalString = "";
   for (var i = 0; i < clause["terms"].length; i++) {
-    finalString +=
-      clause["terms"][i]["pre"] +
-      clause["terms"][i]["text"] +
-      clause["terms"][i]["post"];
+    if (i != clause["terms"].length - 1) {
+      finalString +=
+        clause["terms"][i]["pre"] +
+        clause["terms"][i]["text"] +
+        clause["terms"][i]["post"];
+    } else {
+      finalString += clause["terms"][i]["pre"] + clause["terms"][i]["text"];
+    }
   }
-  return finalString;
+  if (pos != 2) {
+    finalString += clause["terms"][clause["terms"].length - 1]["post"];
+    return [finalString, ""];
+  } else {
+    return [finalString, clause["terms"][clause["terms"].length - 1]["post"]];
+  }
+
   // return clause["text"];
 }
 
@@ -39,14 +49,17 @@ function convertClauseToString(clause) {
 function transform_clause_into_quartuple(clauses, i) {
   var before_context = "";
   for (var j = 0; j < i; j++) {
-    before_context += convertClauseToString(clauses[j]);
+    before_context += convertClauseToString(clauses[j], 1)[0];
     // before_context += clauses[j]["text"];
   }
   // var phrase_to_be_translated = clauses[j]["text"];
-  var phrase_to_be_translated = convertClauseToString(clauses[j]);
-  var after_context = "";
+  var phrase_to_be_translated_arr = convertClauseToString(clauses[j], 2);
+  var phrase_to_be_translated = phrase_to_be_translated_arr[0];
+  var extra_puncutation_of_phrase_to_be_translated =
+    phrase_to_be_translated_arr[1];
+  var after_context = extra_puncutation_of_phrase_to_be_translated;
   for (var j = i + 1; j < clauses.length; j++) {
-    after_context += convertClauseToString(clauses[j]);
+    after_context += convertClauseToString(clauses[j], 3);
     // after_context += clauses[j]["text"];
   }
   return [before_context, phrase_to_be_translated, after_context];
