@@ -377,9 +377,18 @@ chrome.runtime.onInstalled.addListener(function () {
   });
 });
 
+var processTabs = {};
+
 chrome.webNavigation.onCompleted.addListener((tab) => {
   chrome.tabs.get(tab.tabId, (current_tab_info) => {
     let url = current_tab_info.url;
+
+    // check if time since url was added to processTabs is longer than 10 minutes
+    if (url in processTabs && Date.now() - processTabs[url] < 600000) {
+      return;
+    } else {
+      processTabs[url] = Date.now();
+    }
 
     chrome.storage.sync.set({ currentUrl: url }, () => {
       console.log("set url as" + url);
