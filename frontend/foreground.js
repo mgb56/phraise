@@ -121,11 +121,12 @@ chrome.storage.sync.get(
     console.log("about to send message?");
     chrome.runtime.sendMessage(
       {
-        array: translatedText,
+        array: [translatedText[0]],
         language: currentLanguage,
         phraseLengthVal1: phraseLengthVal1,
         phraseLengthVal2: phraseLengthVal2,
-        isMock: false
+        isMock: false,
+        includeContext: false
       },
       function (response) {
         processTranslations(response.translatedText);

@@ -225,7 +225,8 @@ async function translate_phrase(
   before_context,
   phrase_to_be_translated,
   after_context,
-  language
+  language,
+  includeContext
 ) {
   // const delimiter = " ALFSKJLKASF ";
   let space_arr = count_leading_and_trailing_whitespace(
@@ -244,6 +245,25 @@ async function translate_phrase(
     leftExtraPuncutation = extraPunctuationArray[0];
     rightExtraPuncutation = extraPunctuationArray[1];
     phrase_to_be_translated = extraPunctuationArray[2];
+  }
+
+  if (!includeContext) {
+    let translationObj = await translate(phrase_to_be_translated, {
+      from: "en",
+      to: language
+    });
+    let result = translationObj["text"];
+    phrase_to_be_translated =
+      leftExtraPuncutation + phrase_to_be_translated + rightExtraPuncutation;
+    phrase_to_be_translated =
+      " ".repeat(num_left_spaces) +
+      phrase_to_be_translated +
+      " ".repeat(num_right_spaces);
+    result = leftExtraPuncutation + result + rightExtraPuncutation;
+    result =
+      " ".repeat(num_left_spaces) + result + " ".repeat(num_right_spaces);
+
+    return [before_context, result, after_context, phrase_to_be_translated];
   }
 
   // const spanOpen = "<p>";
@@ -311,7 +331,8 @@ async function partially_translate(
   sentence,
   language,
   phraseLengthVal1,
-  phraseLengthVal2
+  phraseLengthVal2,
+  includeContext
 ) {
   var split_sentence = naive_split(
     sentence,
@@ -322,7 +343,8 @@ async function partially_translate(
     split_sentence[0],
     split_sentence[1],
     split_sentence[2],
-    language
+    language,
+    includeContext
   );
   return translated_sentence;
 }
@@ -331,7 +353,8 @@ async function partially_translate_sentences(
   sentences,
   language,
   phraseLengthVal1,
-  phraseLengthVal2
+  phraseLengthVal2,
+  includeContext
 ) {
   var result = [];
   for (var sentence of sentences) {
@@ -339,24 +362,27 @@ async function partially_translate_sentences(
       sentence,
       language,
       phraseLengthVal1,
-      phraseLengthVal2
+      phraseLengthVal2,
+      includeContext
     );
     result.push(translated_sentence);
   }
   return result;
 }
-console.log("about to translate the resident scholar sentence");
-partially_translate_sentences(
-  [
-    ", Ryan helped care for her while his mother commuted to college in Madison, Wisconsin."
-  ],
-  "es",
-  10,
-  50
-).then((res) => {
-  console.log(res);
-  // sendResponse({ translatedText: res });
-});
+// console.log("about to translate the resident scholar sentence");
+// partially_translate_sentences(
+//   [
+//     ", Ryan helped care for her while his mother commuted to college in Madison, Wisconsin."
+//   ],
+//   "es",
+//   10,
+//   50,
+//   true
+// ).then((res) => {
+//   console.log("AND THE RESPONSE IS");
+//   console.log(res);
+//   // sendResponse({ translatedText: res });
+// });
 
 chrome.runtime.onInstalled.addListener(function () {
   chrome.storage.sync.set({ color: "#3aa757" }, function () {
@@ -403,6 +429,7 @@ chrome.runtime.onMessage.addListener(function (request, _sender, sendResponse) {
   let phraseLengthVal1 = request["phraseLengthVal1"];
   let phraseLengthVal2 = request["phraseLengthVal2"];
   let isMock = request["isMock"];
+  let includeContext = request["includeContext"];
 
   const mockResponse = [
     [
@@ -422,7 +449,8 @@ chrome.runtime.onMessage.addListener(function (request, _sender, sendResponse) {
       sentenceArray,
       targetLanguage,
       phraseLengthVal1,
-      phraseLengthVal2
+      phraseLengthVal2,
+      includeContext
     ).then((res) => {
       console.log(res);
       sendResponse({ translatedText: res });
