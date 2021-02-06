@@ -164,7 +164,7 @@ function naive_split(sentence, min_length, max_length) {
   if (clauses.length > 0) {
     return transform_clause_into_quartuple(clauses, 0);
   } else {
-    return null;
+    return ["", "", ""];
   }
 }
 
@@ -245,6 +245,11 @@ async function translate_phrase(
     leftExtraPuncutation = extraPunctuationArray[0];
     rightExtraPuncutation = extraPunctuationArray[1];
     phrase_to_be_translated = extraPunctuationArray[2];
+  }
+
+  // don't bother sending a request for nothing
+  if (phrase_to_be_translated === "") {
+    return [before_context, "", after_context, phrase_to_be_translated];
   }
 
   if (!includeContext) {
@@ -339,6 +344,7 @@ async function partially_translate(
     phraseLengthVal1,
     phraseLengthVal2
   );
+  console.log(split_sentence);
   var translated_sentence = await translate_phrase(
     split_sentence[0],
     split_sentence[1],
@@ -369,20 +375,22 @@ async function partially_translate_sentences(
   }
   return result;
 }
-// console.log("about to translate the resident scholar sentence");
-// partially_translate_sentences(
-//   [
-//     ", Ryan helped care for her while his mother commuted to college in Madison, Wisconsin."
-//   ],
-//   "es",
-//   10,
-//   50,
-//   true
-// ).then((res) => {
-//   console.log("AND THE RESPONSE IS");
-//   console.log(res);
-//   // sendResponse({ translatedText: res });
-// });
+console.log("about to translate the resident scholar sentence");
+partially_translate_sentences(
+  [
+    "this is pretty simple",
+    "this second sentence adds a world of difficulty",
+    ""
+  ],
+  "es",
+  10,
+  50,
+  true
+).then((res) => {
+  console.log("AND THE RESPONSE IS");
+  console.log(res);
+  // sendResponse({ translatedText: res });
+});
 
 chrome.runtime.onInstalled.addListener(function () {
   chrome.storage.sync.set({ color: "#3aa757" }, function () {

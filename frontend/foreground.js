@@ -121,7 +121,7 @@ chrome.storage.sync.get(
     console.log("about to send message?");
     chrome.runtime.sendMessage(
       {
-        array: [translatedText[0]],
+        array: translatedText,
         language: currentLanguage,
         phraseLengthVal1: phraseLengthVal1,
         phraseLengthVal2: phraseLengthVal2,
