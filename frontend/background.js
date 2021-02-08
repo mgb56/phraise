@@ -238,14 +238,14 @@ async function translate_phrase(
 
   var leftExtraPuncutation = "";
   var rightExtraPuncutation = "";
-  if (before_context === "" && after_context === "") {
-    var extraPunctuationArray = getLeadingAndTrailingPuncutation(
-      phrase_to_be_translated
-    );
-    leftExtraPuncutation = extraPunctuationArray[0];
-    rightExtraPuncutation = extraPunctuationArray[1];
-    phrase_to_be_translated = extraPunctuationArray[2];
-  }
+  // if (before_context === "" && after_context === "") {
+  var extraPunctuationArray = getLeadingAndTrailingPuncutation(
+    phrase_to_be_translated
+  );
+  leftExtraPuncutation = extraPunctuationArray[0];
+  rightExtraPuncutation = extraPunctuationArray[1];
+  phrase_to_be_translated = extraPunctuationArray[2];
+  // }
 
   // don't bother sending a request for nothing
   if (phrase_to_be_translated === "") {
@@ -258,12 +258,14 @@ async function translate_phrase(
       to: language
     });
     let result = translationObj["text"];
+
     phrase_to_be_translated =
       leftExtraPuncutation + phrase_to_be_translated + rightExtraPuncutation;
     phrase_to_be_translated =
       " ".repeat(num_left_spaces) +
       phrase_to_be_translated +
       " ".repeat(num_right_spaces);
+
     result = leftExtraPuncutation + result + rightExtraPuncutation;
     result =
       " ".repeat(num_left_spaces) + result + " ".repeat(num_right_spaces);
