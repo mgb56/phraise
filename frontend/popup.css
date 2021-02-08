@@ -6,7 +6,7 @@ body {
   height: 350px;
   margin: 0;
   box-sizing: border-box;
-  background: #7efb7e;
+  background: #78da78;
 }
 
 /* Style the tab */
@@ -241,7 +241,7 @@ body {
 
 #Block {
   width: 100%;
-  height: 100%;
+  height: 60%;
 }
 
 .allBlockFunctionality {
@@ -261,7 +261,8 @@ body {
 #blockCurrent {
   width: 50%;
   height: 20%;
-  margin: 10% auto;
+  margin: 0% auto;
+  margin-bottom: 10%;
 }
 
 .unblockContainer {
