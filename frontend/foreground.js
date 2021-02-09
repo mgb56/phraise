@@ -2,8 +2,14 @@ var translatedNodes = [];
 var translatedText = [];
 // dynamically assign different ID's to each translation
 var translationID = 0;
+// to prevent selection of adjacent phrases in the DOM
+var skip = false;
 
 function handleText(node, samplingRateVal) {
+  if (skip) {
+    skip = false;
+    return;
+  }
   var numTokens = node.textContent.trim().split(" ").length;
   if (Math.random() < samplingRateVal && numTokens > 7) {
     // makes sure the string isn't a bunch of junk like dates
@@ -13,6 +19,7 @@ function handleText(node, samplingRateVal) {
       console.log(node.textContent);
       translatedText.push(node.textContent);
       translatedNodes.push(node);
+      skip = true;
     }
   }
 }
